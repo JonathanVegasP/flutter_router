@@ -1,4 +1,4 @@
-library flutterrouter;
+library flutter_router;
 
 /// A Calculator.
 class Calculator {
