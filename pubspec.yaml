@@ -1,7 +1,7 @@
 name: flutter_router
-description: A plugin that generate defined routes.
-version: 1.0.0
-author: JonathanVegasP
+description: Flutter Router
+version: 1.0.1
+author: Jonathan Vegas Peixoto
 homepage: jonathanvegas.tech
 
 environment:
