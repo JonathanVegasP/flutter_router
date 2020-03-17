@@ -10,7 +10,7 @@ A Router Management
 class AppRoutes {
   AppRoutes._();
 
-  //A controller to manage app routes
+  //A controller to manage the app routes
   static final router = RouterController();
 
   //Variables that contains screen's name
@@ -30,7 +30,7 @@ class AppRoutes {
       fullscreenDialog: false,
       //Define a custom transition duration. Native transitions won't be affected (Default 250 milliseconds)
       transitionDuration: const Duration(milliseconds: 300),
-      //Define a custom transition (Default right to left with fade in)
+      //Define a custom transition. A custom transition only works if useNativeTransitions is false or the platform is Web (Default right to left with fade in)
       transitionsBuilder: (
         BuildContext context,
         Animation<double> animation,
@@ -42,7 +42,7 @@ class AppRoutes {
           child: child,
         );
       },
-      //Define if you want or don't want use native transitions
+      //Define if you want or don't want use native transitions (Default true)
       useNativeTransitions: !kIsWeb || Platform.isIOS,
     );
   }
