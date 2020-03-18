@@ -48,7 +48,18 @@ class RouterController {
                                   ).animate(animation),
                                   child: FadeTransition(
                                     opacity: animation,
-                                    child: child,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        boxShadow: <BoxShadow>[
+                                          BoxShadow(
+                                            color: Colors.black54,
+                                            spreadRadius: 2.0,
+                                            blurRadius: 4.0,
+                                          )
+                                        ],
+                                      ),
+                                      child: child,
+                                    ),
                                   ),
                                 ),
                               ),
