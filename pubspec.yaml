@@ -1,8 +1,7 @@
-name: flutter_router
+name: router_management
 description: Flutter Router
 version: 1.2.2
-author: Jonathan Vegas Peixoto
-homepage: jonathanvegas.tech
+homepage: https://jonathanvegas.tech
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -1,3 +1,3 @@
-library flutter_router;
+library router_management;
 
-export 'package:flutter_router/src/router_controller.dart';
+export 'package:router_management/src/router_controller.dart';

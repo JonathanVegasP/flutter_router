@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_router/src/route_settings.dart';
+import 'package:router_management/src/route_settings.dart';
 
 class RouterController {
   final _routes = <RouterSettings>[];
