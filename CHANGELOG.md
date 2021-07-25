@@ -18,7 +18,7 @@
 ## [1.2.2] - Added shadow to custom transition
 * Optimized the custom transition with a shadow during the transition between screens
 
-## [1.1.1] -  Breaking Changes and Bug Fixes
+## [1.1.1] - Breaking Changes and Bug Fixes
 * Optimized the custom transition and created compatibility with newer Flutter Versions
 * Now to add a route you need to change from Router.define to Router.addRoute
 * Changed property nativeTransition to useNativeTransitions
