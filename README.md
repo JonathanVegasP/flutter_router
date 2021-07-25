@@ -1,106 +1,272 @@
-### Flutter Router
-A Router Management
+# Router Management
+A plugin that wraps the Navigator 2.0 with a syntax sugar for Flutter Developers
 
----
+## Getting Started
+* Installing the package with Flutter CLI:
 
-### Instructions
+> $ flutter pub add router_management
 
-#### Define your Route Management class
+* Installing the package manually:
+
+Open the pubspec.yaml file, search for **dependencies:** and write this below:
+
+```
+dependencies:
+   router_management: ^2.0.0
+   ...
+```
+
+## Usage
+1. Create a **PageWidget** that builds a **Router** for example:
 
 ```dart
-class AppRoutes {
-  AppRoutes._();
+class App extends PageWidget {
+  const App();
 
-  //A controller to manage the app routes
-  static final router = RouterController();
+  @override
+  void onInit(BuildContext context) {
+    print('onInit');
+    super.onInit(context);
+  }
 
-  //Variables that contains screen's name
-  static const intro = '/';
+  @override
+  void onChangedDependencies(BuildContext context) {
+    print('onChangedDependencies');
+    super.onChangedDependencies(context);
+  }
 
-  static const home = '/home';
+  @override
+  void onDeactivate(BuildContext context) {
+    print('onDeactivate');
+    super.onDeactivate(context);
+  }
 
-  //Function that add routes to RouterController manage routes
-  static void setRoutes() {
-    //Create app routes
-    router.addRoute(
-      //Screen name
-      intro,
-      //WidgetBuilder
-      (context) => IntroScreen(),
-      //Define if the screen will be a fullscreenDialog (Default false)
-      fullscreenDialog: false,
-      //Define a custom transition duration. Native transitions won't be affected (Default 250 milliseconds)
-      transitionDuration: const Duration(milliseconds: 300),
-      //Define a custom transition. A custom transition only works if useNativeTransitions is false or the platform is Web (Default right to left with fade in)
-      transitionsBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-        Widget child,
-      ) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-      //Define if you want or don't want use native transitions (Default true)
-      useNativeTransitions: !kIsWeb || Platform.isIOS,
+  @override
+  void onDispose(BuildContext context) {
+    print('onDispose');
+    super.onDispose(context);
+  }
+
+  @override
+  Widget build(
+     BuildContext context,
+     RouteInformationParser<Object> routeInformationParser,
+     RouterDelegate<Object> routerDelegate) {
+   return MaterialApp.router(
+     routeInformationParser: routeInformationParser,
+     routerDelegate: routerDelegate,
+     title: 'Router Management Example',
+     localizationsDelegates: const [
+      GlobalWidgetsLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+       GlobalCupertinoLocalizations.delegate,
+      ]
     );
   }
 }
 ```
 
-#### Configure your MaterialApp
+2. Create a **Widget** that represents a page for example:
 
 ```dart
-class App extends StatefulWidget {
-  @override
-  _AppState createState() => _AppState();
-}
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-class _AppState extends State<App> {
-  @override
-  void initState() {
-    super.initState();
-    //initialize the routes
-    AppRoutes.setRoutes();
-  }
+  // Declare the path as constant
+  static const path = '/home/:name';
+
+  // Declare the name as constant
+  static const name = 'Home';
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      //Initialize the generator into a material app
-      onGenerateRoute: AppRoutes.router.onGenerateRoute,
-      //Define the app initial route
-      initialRoute: AppRoutes.intro,
+    final arguments = context.arguments; // Get the page's arguments
+
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Welcome ${arguments.params['name']}',
+          style: const TextStyle(fontSize: 32, color: Colors.black),
+        ),
+      ),
     );
   }
 }
-
-void main() => runApp(App());
 ```
 
-#### Navigation between screens
+3. Implements the **NavigationRouter** into the **void main()** method for example:
 
 ```dart
-//Navigate to your named screen with params
-Map<String,dynamic> params = <String,dynamic>{};
-Navigator.pushNamed(context, AppRoutes.home, arguments: params);
-Navigator.pushReplacementNamed(context, AppRoutes.home, arguments: params);
-
-//Get params in the build
-@override
-Widget build(BuildContext context) {
-  final Map<String,dynamic> params = ModalRoute.of(context).settings.arguments;
-  return Container(
-    color: Colors.blue,
-  );
-}
-
-//Get params in the didChangeDependencies
-@override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  final Map<String,dynamic> params = ModalRoute.of(context).settings.arguments;
+void main() {
+  runApp(NavigationRouter(
+    child: const App(), // The PageWidget that builds a Router
+    pages: [
+      NavigationPage(
+        path: SplashScreen.path,
+        builder: () => const SplashScreen(),
+        name: SplashScreen.name,
+      ),
+      NavigationPage(
+        path: HomeScreen.path,
+        builder: () => const HomeScreen(),
+        name: HomeScreen.name,
+      ),
+    ], // The pages
+    initialPage: SplashScreen.path,  // The initial page's path. Defaults to "/"
+    unknownPage: NavigationPage(
+      path: NotFound.path,
+      builder: () => const NotFound(),
+      name: NotFound.name,
+    ), // A page that is built when an unknown path is passed
+  ));
 }
 ```
+
+4. Use the **Navigation** instance from **NavigationService.instance** to controls the Navigator 2.0 with Imperative methods for example:
+
+> NavigatorService.instance.pushReplacement('/home/John Doe');
+> or using Router Management extensions on BuildContext
+> BuildContext.navigator.pushReplacement('/home/John Doe');
+
+5. To get the path's arguments use the extension on **BuildContext** for example:
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final arguments = context.arguments;
+  ...
+```
+
+6. Keep coding :)
+
+## APIS
+The Router Management has many APIS to ensure that you can handle the Navigator 2.0
+
+#### NavigationRouter
+Is the widget core for Navigator 2.0 implementation
+
+* Props
+
+| Name | Description | Required |
+| :--: | ----------- | :------: |
+| child | Is used to build a **Router** to handle the Navigator 2.0 implementation | true |
+| pages | Is used to create pages that can be accessed by the Navigator 2.0 | true |
+| initialPage | Is used to render the page that contains the same path. Defaults to **"/"** | false |
+| navigatorObservers | Is used to observe the Navigator 2.0 when navigating between screens. Defaults to **List.empty()** | false |
+| useHash | If it is true then will be used the default url strategy that is a path with hash, for example: flutterexample.dev/#/path/to/screen, else will be flutterexample.dev/path/to/screen. Defaults **to false** | false |
+| restorationScopeId | Is used to save and restore the navigator 2.0 state, if it is null then the state will not be saved. Defaults to **null** | false |
+| unknownPage | Is used to create an unknown page with the given path. Defaults to **null** | false |
+| transitionsBuilder | Is used to build a global custom animation transition when navigating to another page. Defaults: **If the platform is web then will not has any transition else will be null** | false |
+
+* Static Methods
+
+| Name | Description |
+| ---- | ----------- |
+| defaultWebTransition | Is used to get the default web transition that means it does not have any transition when navigating between screens |
+
+#### PageWidget
+Is used to create a **Router** to handle the navigator 2.0. For example into the build we can use the default implementation of **MaterialApp.router**
+
+* Methods
+
+| Name | Description |
+| :--: | ----------- |
+| onInit | Is a shortcut for the method **State.initState** |
+| onChangedDependencies | Is a shortcut for the method **State.didChangeDependencies** |
+| onDeactivate | Is a shortcut for the method **State.deactivate** |
+| onDispose | Is a shortcut for the method **State.dispose** |
+| build | Is used to render a **Router** that handle the Navigator 2.0. |
+
+#### NavigationPage
+Is used to create a page into the **NavigationRouter**
+
+* Props
+
+| Name | Description | Required |
+| :--: | ----------- | :------: |
+| path | Is the page's path like: /home. To declare a page's param use this pattern "/:param-name" then use the **PageArguments.params['param-name']** to get the data from the path like: /profile/:id | true |
+| builder | Is used to build the page and create an active page | true |
+| fullscreenDialog | Is used to create a fullscreen dialog page. Defaults to **false** | false |
+| maintainState | If it is false the state of the page will be discarded when navigating to another page. Defaults to **true** | false |
+| transitionDuration | Is used to controls the animation transition. Defaults to **Duration(milliseconds: 400)** | false |
+| validators | is used to controls the page's activation when it must has more than the basics arguments like an id or something else, if it returns false then the page will be redirect to the initial page or use the **Navigation** to redirect to another page. Defaults to **List.empty()** | false |
+| restorationId | is used to save and restore the page's state, if it is **null** then the state will not be saved. Defaults to **null** | false |
+| name | Is used to name the page. Defaults to **null** | false |
+| transitionsBuilder | Is used to create a custom transition to the page. Defaults to **System's Animation Transition** | false |
+
+#### NavigationService
+Is the core class that is used to get the actual **Navigation** instance
+
+* Static Methods
+
+| Name | Description |
+| :--: | ----------- |
+| instance | Is the implementation of Navigator 2.0 |
+
+#### Navigation
+Is the core navigation interface and is used to controls the Navigator 2.0
+
+* Methods
+
+| Name | Description |
+| :--: | ----------- |
+| push | Is used to navigate to another screen maintaining the previous screen |
+| pushReplacement | Is used to navigate to another screen replacing the previous screen |
+| pushAndReplaceUntil | Is used to navigate to another screen and replaces the previous screens until the condition returns **true** |
+| pop | Is used to navigate back to the previous screen |
+| popAndPush | Is used to navigate back to the previous screen and navigate to another screen |
+| popUntil | Is used to navigate back until the condition returns **true** |
+| pushToUnknownPage | Is used to navigate to the unknown page |
+
+* Getters
+
+| Name | Description |
+| :--: | ----------- |
+| canPop | Is used to know when the page can be popped |
+
+#### PageArguments
+Is used to get the current page's arguments
+
+* Props
+
+| Name | Description |
+| :--: | ----------- |
+| uri | Is used to get the path's data |
+| data | Is used to get the data that can be passed into the **Navigation** push methods |
+| params | Is used to get the path's params |
+| path | Is a shortcut from **Uri.path** to get the current path |
+| paths | Is a shortcut from **Uri.pathSegments** to get the current paths segments |
+| completePath | Is a shortcut from **Uri.toString()** to get the current complete path |
+| query | Is a shortcut from **Uri.queryParameters** to get the current query as a **Map<String,String>** object |
+| queries | Is a shortcut from **Uri.queryParametersAll** to get the current list of queries as a **Map<String,List\<String>>** object
+
+#### PageValidator
+Can be used to validate any pages with **NavigationPage.validators**
+
+* Methods
+
+| Name | Description |
+| :--: | ----------- |
+| call | If it returns false then the page cannot be activated and can be used to redirect to another page when it is needed |
+
+## Extensions
+
+The Router Management has two extensions to maintain a clean code
+
+#### NavigationExtension
+Is used to get the current **Navigation** instance on the **BuildContext**
+
+* Getters
+
+| Name | Description |
+| :--: | ----------- |
+| navigator | Is used to get the current **Navigation** instance |
+
+#### PageArgumentsExtension
+Is used to get the current **PageArguments** on the **BuildContext**
+
+* Getters
+
+| Name | Description |
+| :--: | ----------- |
+| arguments | Is used to get the current **PageArguments** |

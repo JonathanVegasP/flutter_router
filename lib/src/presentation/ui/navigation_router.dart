@@ -1,0 +1,73 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
+import '../../domain/models/navigation_page.dart';
+import '../../domain/widgets/page_widget.dart';
+import '../mixins/navigation_router_mixin.dart';
+
+/// [NavigationRouter] is the widget core for navigator 2.0 implementation
+class NavigationRouter extends StatefulWidget {
+  /// [NavigationRouter.child] is used to build a [Router] to handle the
+  /// navigator 2.0
+  final PageWidget child;
+
+  /// [NavigationRouter.pages] is used to create pages that can be accessed by
+  /// the navigator 2.0
+  final List<NavigationPage> pages;
+
+  /// [NavigationRouter.initialPage] is used to render the page that has the
+  /// same path as initial page. Defaults to "/"
+  final String initialPage;
+
+  /// [NavigationRouter.navigatorObservers] is used to observer the navigator
+  /// 2.0 when navigating between screens. Defaults to [List.empty()]
+  final List<NavigatorObserver> navigatorObservers;
+
+  /// [NavigationRouter.useHash] If it is true then will be used the default url
+  /// strategy that is a path with hash, for example:
+  /// flutterexample.dev/#/path/to/screen, otherwise will be
+  /// flutterexample.dev/path/to/screen. Defaults to [false]
+  final bool useHash;
+
+  /// [NavigationRouter.restorationScopeId] is used to save and restore the
+  /// navigator 2.0 state, if it is [null] then the state will not be saved.
+  /// Defaults to [null]
+  final String? restorationScopeId;
+
+  /// [NavigationRouter.unknownPage] is used to create an unknownPage with the
+  /// given path
+  final NavigationPage? unknownPage;
+
+  /// [NavigationRouter.transitionsBuilder] is used to build a global custom
+  /// animation transition when navigating to another page. Defaults: if the
+  /// platform is web then will not have any transition else will be [null]
+  final RouteTransitionsBuilder? transitionsBuilder;
+
+  const NavigationRouter({
+    Key? key,
+    required this.child,
+    required this.pages,
+    this.initialPage = '/',
+    this.navigatorObservers = const <NavigatorObserver>[],
+    this.useHash = false,
+    this.restorationScopeId,
+    this.unknownPage,
+    this.transitionsBuilder = kIsWeb ? defaultWebTransition : null,
+  }) : super(key: key);
+
+  /// [NavigationRouter.defaultWebTransition] is used to get the default web
+  /// transition that means it does not have any transition when navigating
+  /// between screens
+  static Widget defaultWebTransition(_, __, ___, Widget child) => child;
+
+  @override
+  _NavigationRouterState createState() => _NavigationRouterState();
+}
+
+class _NavigationRouterState extends State<NavigationRouter>
+    with NavigationRouterMixin {
+  @override
+  Widget build(BuildContext context) {
+    return widget.child.build(context, parser, service);
+  }
+}
