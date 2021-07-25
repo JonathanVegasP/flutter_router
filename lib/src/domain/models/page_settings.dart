@@ -17,7 +17,7 @@ class PageSettings<T> extends Page<void> {
     String path,
     String? restorationId,
     String? name,
-    PageArguments? arguments,
+    PageArguments arguments,
     this.child,
     this.fullscreenDialog,
     this.maintainState,
