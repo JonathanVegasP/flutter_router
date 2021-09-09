@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../domain/models/navigation_page.dart';
-import '../../domain/widgets/page_widget.dart';
+import '../../data/models/navigation_page.dart';
 import '../mixins/navigation_router_mixin.dart';
+import '../widgets/page_widget.dart';
 
 /// [NavigationRouter] is the widget core for navigator 2.0 implementation
 class NavigationRouter extends StatefulWidget {
@@ -43,6 +43,7 @@ class NavigationRouter extends StatefulWidget {
   /// platform is web then will not have any transition else will be [null]
   final RouteTransitionsBuilder? transitionsBuilder;
 
+  /// Is used to create a new instance of [NavigationRouter]
   const NavigationRouter({
     Key? key,
     required this.child,
@@ -58,7 +59,13 @@ class NavigationRouter extends StatefulWidget {
   /// [NavigationRouter.defaultWebTransition] is used to get the default web
   /// transition that means it does not have any transition when navigating
   /// between screens
-  static Widget defaultWebTransition(_, __, ___, Widget child) => child;
+  static Widget defaultWebTransition(
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) {
+    return child;
+  }
 
   @override
   _NavigationRouterState createState() => _NavigationRouterState();

@@ -1,20 +1,21 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-import '../../domain/models/navigation_page.dart';
-import '../../domain/models/page_arguments.dart';
-import '../../domain/models/page_settings.dart';
-import '../../domain/services/navigation.dart';
+import '../../presentation/pages/page_settings.dart';
+import '../exceptions/navigation_exception.dart';
+import '../models/navigation_page.dart';
+import '../models/page_arguments.dart';
+import 'navigation.dart';
 
 mixin NavigationMixin on Navigation, ChangeNotifier {
   final activePages = <PageSettings>[];
   final _pages = <NavigationPage>[];
-  final observers = <NavigatorObserver>[
-    MaterialApp.createMaterialHeroController()
-  ];
+
   NavigationPage? _unknownPage;
   RouteTransitionsBuilder? _transitionsBuilder;
 
+  /// This is used internally
+  @protected
   PageSettings<T> buildSettings<T>(
       NavigationPage page, PageArguments arguments) {
     return PageSettings<T>(
@@ -31,20 +32,18 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
     );
   }
 
+  /// This is used internally
   void addInitialPage(String page) {
     activePages.add(PageSettings.initialPage(page));
   }
 
-  void addPage(NavigationPage page) {
-    _pages.add(page);
-  }
+  /// This is used internally
+  void addPage(NavigationPage page) => _pages.add(page);
 
-  set navigationObservers(List<NavigatorObserver> newValue) {
-    observers.addAll(newValue);
-  }
-
+  /// This is used internally
   set unknownPage(NavigationPage? newValue) => _unknownPage = newValue;
 
+  /// This is used internally
   set transitionsBuilder(RouteTransitionsBuilder? newValue) {
     _transitionsBuilder = newValue;
   }
@@ -53,6 +52,8 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
     return PageArguments(Uri.parse(page), data);
   }
 
+  /// This is used internally
+  @protected
   NavigationPage? getPage(PageArguments arguments) {
     final length = arguments.paths.length;
 
@@ -63,26 +64,24 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
       if (length != paths.length) continue;
 
-      var hasFound = false;
+      NavigationPage? result;
 
       for (var i = 0; i < length; i++) {
         final path = paths[i];
         final current = arguments.paths[i];
 
         if (path == current) {
-          hasFound = true;
+          result = page;
         } else if (path.isNotEmpty && path[0] == ':') {
           arguments.params[path.substring(1)] = current;
         } else {
-          hasFound = false;
+          result = null;
           break;
         }
       }
 
-      if (hasFound) return page;
+      return result;
     }
-
-    return null;
   }
 
   Future<T?> _push<T>(PageArguments arguments, NavigationPage page) async {
@@ -95,6 +94,8 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
     return activePage.completer?.future;
   }
 
+  /// This is used internally
+  @protected
   void popWithResult<T>([T? result]) {
     final completer = activePages.removeLast().completer;
 
@@ -146,7 +147,16 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
   @override
   void pop<T>([T? result]) {
-    if (!canPop) return;
+    assert(() {
+      if (!canPop) {
+        final last = activePages.last;
+        final name = last.name ?? last.path;
+
+        throw NavigationException('The page $name cannot be popped');
+      }
+
+      return true;
+    }());
 
     popWithResult<T>(result);
 
@@ -155,7 +165,16 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
   @override
   Future<R?> popAndPush<T, R>(String page, {T? result, Object? data}) async {
-    if (!canPop) return null;
+    assert(() {
+      if (!canPop) {
+        final last = activePages.last;
+        final name = last.name ?? last.path;
+
+        throw NavigationException('The page $name cannot be popped');
+      }
+
+      return true;
+    }());
 
     final arguments = _buildArgs(page, data);
 
@@ -170,7 +189,16 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
   @override
   void popUntil(bool Function(PageSettings) predicate) {
-    if (!canPop) return;
+    assert(() {
+      if (!canPop) {
+        final last = activePages.last;
+        final name = last.name ?? last.path;
+
+        throw NavigationException('The page $name cannot be popped');
+      }
+
+      return true;
+    }());
 
     while (canPop && !predicate(activePages.last)) {
       popWithResult();
@@ -181,15 +209,17 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
   @override
   void pushToUnknownPage([bool shouldResetPages = true]) {
-    if (_unknownPage != null) {
-      if (shouldResetPages) activePages.clear();
+    final unknownPage = _unknownPage;
 
-      activePages.add(
-        buildSettings(_unknownPage!, _buildArgs(_unknownPage!.path, null)),
-      );
+    if (unknownPage == null) return;
 
-      notifyListeners();
-    }
+    if (shouldResetPages) activePages.clear();
+
+    activePages.add(
+      buildSettings(unknownPage, _buildArgs(unknownPage.path, null)),
+    );
+
+    notifyListeners();
   }
 
   @override

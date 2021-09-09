@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../domain/models/page_arguments.dart';
+import '../models/page_arguments.dart';
 
 /// [PageArgumentsExtension] is used to get the current [PageArguments] on the
 /// [BuildContext]

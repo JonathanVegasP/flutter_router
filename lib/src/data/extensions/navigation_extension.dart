@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../data/services/navigation_service.dart';
-import '../../domain/services/navigation.dart';
+import '../mixins/navigation.dart';
+import '../services/navigation_service.dart';
 
 /// [NavigationExtension] is used to get the current [Navigation] instance on
 /// the [BuildContext]

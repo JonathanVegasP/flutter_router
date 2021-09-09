@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../domain/models/page_arguments.dart';
+import '../models/page_arguments.dart';
 
 mixin NavigationParserMixin on RouteInformationParser<PageArguments> {
   String get initialPage;
@@ -8,7 +8,7 @@ mixin NavigationParserMixin on RouteInformationParser<PageArguments> {
   @override
   Future<PageArguments> parseRouteInformation(
       RouteInformation routeInformation) async {
-    String location = routeInformation.location!;
+    var location = routeInformation.location!;
 
     if (location == '/') {
       location = initialPage;

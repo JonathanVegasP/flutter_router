@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 /// [MaterialApp.router]
 @immutable
 abstract class PageWidget {
+
+  /// Is the default constructor implementation for creating a new instance of a
+  /// that is abstracting the [PageWidget]
   const PageWidget();
 
   /// [PageWidget.onInit] is a shortcut for the method [State.initState]
@@ -22,15 +25,25 @@ abstract class PageWidget {
 
   /// [PageWidget.build] must be used to render a [Router] that handle the
   /// navigator 2.0. For example
+  ///
   /// Widget build(
+  ///
   /// BuildContext context,
+  ///
   /// RouteInformationParser<Uri> routeInformationParser,
+  ///
   /// RouterDelegate<Uri> routerDelegate) {
+  ///
   ///   return MaterialApp.router(
+  ///
   ///   routeInformationParser: routeInformationParser,
+  ///
   ///   routerDelegate: routerDelegate,
+  ///
   ///   title: 'Hello World',
+  ///
   ///   );
+  ///
   /// }
   Widget build(
     BuildContext context,

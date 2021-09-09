@@ -1,3 +1,7 @@
+## [2.1.0] - Linking pages when using deep links
+* Performance improvements
+* Added a way to linking pages with the path provided in the navigation
+
 ## [2.0.0] - Navigator 2.0
 * Break Changes: The plugin was refactored in favor of Navigator 2.0 from imperative to declarative
 * Support for Flutter Web and Deep Links

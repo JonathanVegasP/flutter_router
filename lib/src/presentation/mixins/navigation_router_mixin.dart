@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:url_strategy/url_strategy.dart';
 
+import '../../data/exceptions/navigation_exception.dart';
 import '../../data/services/navigation_parser.dart';
 import '../../data/services/navigation_service.dart';
-import '../../exceptions/navigation_exception.dart';
 import '../ui/navigation_router.dart';
 
 mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
@@ -20,22 +20,16 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
 
     service.addInitialPage(widget.initialPage);
 
-    bool? hasInitialPage;
+    final pages = widget.pages;
 
-    for (final page in widget.pages) {
+    for (final page in pages) {
       service.addPage(page);
-
-      assert(() {
-        if (hasInitialPage != true) {
-          hasInitialPage = page.path == widget.initialPage;
-        }
-
-        return true;
-      }());
     }
 
     assert(() {
-      if (hasInitialPage == false) {
+      final hasInitialPage = pages.any((p) => p.path == widget.initialPage);
+
+      if (!hasInitialPage) {
         throw NavigationException(
             'Was not found any page with the path "${widget.initialPage}"');
       }
@@ -44,7 +38,7 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     }());
 
     assert(() {
-      final list = widget.pages.map((e) => e.path).toList();
+      final list = pages.map((p) => p.path).toList();
 
       if (list.length != list.toSet().length) {
         throw const NavigationException(

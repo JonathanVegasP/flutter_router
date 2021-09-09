@@ -1,35 +1,35 @@
 import 'package:flutter/widgets.dart';
 
-import '../../exceptions/navigation_exception.dart';
-import '../models/page_arguments.dart';
-import '../services/navigation.dart';
+import '../exceptions/navigation_exception.dart';
+import '../mixins/navigation.dart';
 import '../validators/page_validator.dart';
+import 'page_arguments.dart';
 
 /// [NavigationPage] is used to create a page into the [NavigationRouter]
 class NavigationPage {
-  /// [NavigationPage.path] is the page's path like: /home. To declare a page's
+  /// [path] is the page's path like: /home. To declare a page's
   /// param use this pattern "/:param-name" then use the
   /// [PageArguments.params['param-name']] to get the data from the path like:
   /// /profile/:id
   final String path;
 
-  /// [NavigationPage.builder] is used to build the page and create an active
+  /// [builder] is used to build the page and create an active
   /// page
   final Widget Function() builder;
 
-  /// [NavigationPage.fullscreenDialog] is used to create a fullscreen dialog
+  /// [fullscreenDialog] is used to create a fullscreen dialog
   /// page. Defaults to [false]
   final bool fullscreenDialog;
 
-  /// [NavigationPage.maintainState] If it is false the state of the page will
+  /// [maintainState] If it is false the state of the page will
   /// be discarded when navigating to another page. Defaults to [true]
   final bool maintainState;
 
-  /// [NavigationPage.transitionDuration] is used to controls the animation
+  /// [transitionDuration] is used to controls the animation
   /// transition. Defaults to [Duration(milliseconds: 400)]
   final Duration transitionDuration;
 
-  /// [NavigationPage.validators] is used to controls the page's activation when
+  /// [validators] is used to controls the page's activation when
   /// it must has more than the basics arguments like an id or something else,
   /// if it returns false then the page will be redirect to the initial page or
   /// use the [Navigation] to redirect to another page. Defaults to
@@ -41,13 +41,14 @@ class NavigationPage {
   /// [null]
   final String? restorationId;
 
-  /// [NavigationPage.name] is used to name the page. Defaults to [null]
+  /// [name] is used to name the page. Defaults to [null]
   final String? name;
 
   /// [NavigationPage.transitionsBuilder] is used to create a custom transition
   /// to the page. Defaults to System's Animation Transition
   final RouteTransitionsBuilder? transitionsBuilder;
 
+  /// Is used to create a new instance of [NavigationPage]
   NavigationPage({
     required this.path,
     required this.builder,
@@ -59,7 +60,7 @@ class NavigationPage {
     this.name,
     this.transitionsBuilder,
   }) : assert(() {
-          if (path[0] != '/') {
+          if (path.isEmpty || path[0] != '/') {
             throw const NavigationException(
               'NavigationPage.path must begin with "/"',
             );
@@ -68,6 +69,7 @@ class NavigationPage {
           return true;
         }());
 
+  /// Is used internally
   Future<bool> call(Navigation navigation, PageArguments arguments) async {
     for (final validator in validators) {
       if (!(await validator(this, navigation, arguments))) return false;
