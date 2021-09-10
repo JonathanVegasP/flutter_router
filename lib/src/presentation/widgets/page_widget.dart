@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 /// [MaterialApp.router]
 @immutable
 abstract class PageWidget {
-
   /// Is the default constructor implementation for creating a new instance of a
   /// that is abstracting the [PageWidget]
   const PageWidget();

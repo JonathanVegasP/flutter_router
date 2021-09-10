@@ -1,3 +1,6 @@
+## [2.1.1] - Bug Fixes
+* A bug was fixed when trying to navigate to another screen
+
 ## [2.1.0] - Linking pages when using deep links
 * Performance improvements
 * Added a way to linking pages with the path provided in the navigation

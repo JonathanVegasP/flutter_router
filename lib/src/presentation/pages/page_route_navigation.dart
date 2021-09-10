@@ -29,8 +29,8 @@ class PageRouteNavigation extends PageRoute<void> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    if(animation.isCompleted || secondaryAnimation.isCompleted) return child;
-    
+    if (animation.isCompleted || secondaryAnimation.isCompleted) return child;
+
     final transitionsBuilder = settings.transitionsBuilder;
 
     if (transitionsBuilder != null) {

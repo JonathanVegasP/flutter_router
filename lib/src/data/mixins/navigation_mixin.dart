@@ -64,23 +64,23 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
       if (length != paths.length) continue;
 
-      NavigationPage? result;
+      var hasFound = false;
 
       for (var i = 0; i < length; i++) {
         final path = paths[i];
         final current = arguments.paths[i];
 
         if (path == current) {
-          result = page;
+          hasFound = true;
         } else if (path.isNotEmpty && path[0] == ':') {
           arguments.params[path.substring(1)] = current;
         } else {
-          result = null;
+          hasFound = false;
           break;
         }
       }
 
-      return result;
+      if (hasFound) return page;
     }
   }
 

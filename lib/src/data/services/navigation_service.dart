@@ -14,7 +14,6 @@ class NavigationService extends RouterDelegate<PageArguments>
         Navigation,
         NavigationMixin,
         NavigationDelegateMixin {
-
   /// Is used internally
   NavigationService._();
 
