@@ -53,11 +53,7 @@ class App extends PageWidget {
       routeInformationParser: routeInformationParser,
       routerDelegate: routerDelegate,
       title: 'Router Management Example',
-      localizationsDelegates: const [
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
 }

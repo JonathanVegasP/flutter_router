@@ -1,3 +1,6 @@
+## [2.2.0] - Added RouteInformationProvider
+* Added the RouteInformationProvider to improve performance when using initial route
+
 ## [2.1.1] - Bug Fixes
 * A bug was fixed when trying to navigate to another screen
 

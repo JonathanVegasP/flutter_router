@@ -12,7 +12,7 @@ Open the pubspec.yaml file, search for **dependencies:** and write this below:
 
 ```
 dependencies:
-   router_management: ^2.1.1
+   router_management: ^2.2.0
    ...
 ```
 
@@ -50,17 +50,15 @@ class App extends PageWidget {
   @override
   Widget build(
      BuildContext context,
+     RouteInformationProvider routeInformationProvider,
      RouteInformationParser<Object> routeInformationParser,
      RouterDelegate<Object> routerDelegate) {
    return MaterialApp.router(
+     routeInformationProvider: routeInformationProvider,
      routeInformationParser: routeInformationParser,
      routerDelegate: routerDelegate,
      title: 'Router Management Example',
-     localizationsDelegates: const [
-      GlobalWidgetsLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-       GlobalCupertinoLocalizations.delegate,
-      ]
+     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
 }
@@ -151,7 +149,7 @@ Is the widget core for Navigator 2.0 implementation
 | :--: | ----------- | :------: |
 | child | Is used to build a **Router** to handle the Navigator 2.0 implementation | true |
 | pages | Is used to create pages that can be accessed by the Navigator 2.0 | true |
-| initialPage | Is used to render the page that contains the same path. Defaults to **"/"** | false |
+| initialPage | Is used to render the page that has the same path. If the **PageWidget.build** returns a router without a **RouteInformationProvider** it will not work correctly. Defaults to **"/"** | false |
 | navigatorObservers | Is used to observe the Navigator 2.0 when navigating between screens. Defaults to **List.empty()** | false |
 | useHash | If it is true then will be used the default url strategy that is a path with hash, for example: flutterexample.dev/#/path/to/screen, else will be flutterexample.dev/path/to/screen. Defaults **to false** | false |
 | restorationScopeId | Is used to save and restore the navigator 2.0 state, if it is null then the state will not be saved. Defaults to **null** | false |
