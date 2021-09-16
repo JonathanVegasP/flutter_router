@@ -30,11 +30,14 @@ class _SplashScreenState extends State<SplashScreen> {
       body: ColoredBox(
         color: Colors.blue,
         child: Center(
-          child: Text(
-            'Hello World',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 48,
+          child: Hero(
+            tag: Object(),
+            child: Text(
+              'Hello World',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 48,
+              ),
             ),
           ),
         ),

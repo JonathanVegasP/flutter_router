@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-import 'navigation_mixin.dart';
 import '../../data/models/page_arguments.dart';
+import 'navigation_mixin.dart';
 
 mixin NavigationDelegateMixin
     on
@@ -11,9 +11,7 @@ mixin NavigationDelegateMixin
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
 
-  final _observers = <NavigatorObserver>[
-    MaterialApp.createMaterialHeroController()
-  ];
+  final _observers = <NavigatorObserver>[];
   String? _restorationScopeId;
 
   /// Is used internally

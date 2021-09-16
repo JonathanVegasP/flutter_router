@@ -16,9 +16,12 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: Text(
-          'Welcome ${arguments.params['name']}',
-          style: const TextStyle(fontSize: 32, color: Colors.black),
+        child: Hero(
+          tag: const Object(),
+          child: Text(
+            'Welcome ${arguments.params['name']}',
+            style: const TextStyle(fontSize: 32, color: Colors.black),
+          ),
         ),
       ),
     );

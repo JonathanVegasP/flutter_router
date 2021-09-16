@@ -1,3 +1,6 @@
+## [2.2.1] - Removed unnecessary Hero controller
+* Removed unnecessary Hero Controller. Use the navigatorObservers to add a custom hero controller
+
 ## [2.2.0] - Added RouteInformationProvider
 * Added the RouteInformationProvider to improve performance when using initial route
 
