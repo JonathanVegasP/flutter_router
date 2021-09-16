@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'page_settings.dart';
+import '../../data/models/page_settings.dart';
 
 class PageRouteNavigation extends PageRoute<void> {
   PageRouteNavigation(PageSettings settings)

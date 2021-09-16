@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../presentation/pages/page_settings.dart';
-import '../exceptions/navigation_exception.dart';
-import '../models/navigation_page.dart';
-import '../models/page_arguments.dart';
-import 'navigation.dart';
+import '../../core/exceptions/navigation_exception.dart';
+import '../../data/mixins/navigation.dart';
+import '../../data/models/navigation_page.dart';
+import '../../data/models/page_arguments.dart';
+import '../../data/models/page_settings.dart';
+import '../pages/page_settings.dart';
 
 mixin NavigationMixin on Navigation, ChangeNotifier {
   final activePages = <PageSettings>[];
@@ -18,7 +18,7 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
   @protected
   PageSettings<T> buildSettings<T>(
       NavigationPage page, PageArguments arguments) {
-    return PageSettings<T>(
+    return PageSettingsImpl<T>(
       page.path,
       page.restorationId,
       page.name,
@@ -34,7 +34,7 @@ mixin NavigationMixin on Navigation, ChangeNotifier {
 
   /// This is used internally
   void addInitialPage(String page) {
-    activePages.add(PageSettings.initialPage(page));
+    activePages.add(PageSettingsImpl.initialPage(page));
   }
 
   /// This is used internally

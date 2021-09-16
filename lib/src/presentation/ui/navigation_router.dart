@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/models/navigation_page.dart';
+import '../../data/services/navigation_parser.dart';
 import '../mixins/navigation_router_mixin.dart';
 import '../widgets/page_widget.dart';
 
@@ -75,6 +76,11 @@ class _NavigationRouterState extends State<NavigationRouter>
     with NavigationRouterMixin {
   @override
   Widget build(BuildContext context) {
-    return widget.child.build(context, parser, service);
+    return widget.child.build(
+      context,
+      provider,
+      const NavigationParser(),
+      service,
+    );
   }
 }

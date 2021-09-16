@@ -45,9 +45,11 @@ class App extends PageWidget {
   @override
   Widget build(
       BuildContext context,
+      RouteInformationProvider routeInformationProvider,
       RouteInformationParser<Object> routeInformationParser,
       RouterDelegate<Object> routerDelegate) {
     return MaterialApp.router(
+      routeInformationProvider: routeInformationProvider,
       routeInformationParser: routeInformationParser,
       routerDelegate: routerDelegate,
       title: 'Router Management Example',

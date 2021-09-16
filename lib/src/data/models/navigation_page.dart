@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../exceptions/navigation_exception.dart';
+import '../../core/exceptions/navigation_exception.dart';
 import '../mixins/navigation.dart';
 import '../validators/page_validator.dart';
 import 'page_arguments.dart';

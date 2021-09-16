@@ -1,4 +1,4 @@
-import '../../presentation/pages/page_settings.dart';
+import '../models/page_settings.dart';
 
 /// [Navigation] is the core navigation interface and is used to controls the
 /// navigator 2.0

@@ -29,11 +29,15 @@ abstract class PageWidget {
   ///
   /// BuildContext context,
   ///
+  /// RouteInformationProvider routeInformationProvider,
+  ///
   /// RouteInformationParser<Uri> routeInformationParser,
   ///
   /// RouterDelegate<Uri> routerDelegate) {
   ///
   ///   return MaterialApp.router(
+  ///
+  ///   routeInformationProvider: routeInformationProvider,
   ///
   ///   routeInformationParser: routeInformationParser,
   ///
@@ -46,6 +50,7 @@ abstract class PageWidget {
   /// }
   Widget build(
     BuildContext context,
+    RouteInformationProvider routeInformationProvider,
     RouteInformationParser<Object> routeInformationParser,
     RouterDelegate<Object> routerDelegate,
   );

@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../mixins/navigation.dart';
-import '../../presentation/mixins/navigation_delegate_mixin.dart';
+import '../../data/mixins/navigation.dart';
+import '../mixins/navigation_delegate_mixin.dart';
 import '../mixins/navigation_mixin.dart';
-import '../models/page_arguments.dart';
+import '../../data/models/page_arguments.dart';
 
 /// [NavigationService] is the core class that is used to get the actual
 /// [Navigation] instance

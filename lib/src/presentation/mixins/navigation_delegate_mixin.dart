@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/mixins/navigation_mixin.dart';
+import 'navigation_mixin.dart';
 import '../../data/models/page_arguments.dart';
 
 mixin NavigationDelegateMixin
