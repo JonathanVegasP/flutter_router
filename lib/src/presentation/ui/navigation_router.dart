@@ -17,7 +17,7 @@ class NavigationRouter extends StatefulWidget {
   final List<NavigationPage> pages;
 
   /// [NavigationRouter.initialPage] is used to render the page that has the
-  /// same path as initial page. If the [PageWidget.build] returns a router
+  /// same path. If the [PageWidget.build] returns a router
   /// without a [RouteInformationProvider] it will not work correctly.
   /// Defaults to "/"
   final String initialPage;
