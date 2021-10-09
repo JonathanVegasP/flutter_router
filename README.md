@@ -12,44 +12,15 @@ Open the pubspec.yaml file, search for **dependencies:** and write this below:
 
 ```
 dependencies:
-   router_management: ^2.2.1
+   router_management: ^2.2.2
    ...
 ```
 
 ## Usage
-1. Create a **PageWidget** that builds a **Router** for example:
+1. Create a **RouterBuilder** that builds a **Router** for example:
 
 ```dart
-class App extends PageWidget {
-  const App();
-
-  @override
-  void onInit(BuildContext context) {
-    print('onInit');
-    super.onInit(context);
-  }
-
-  @override
-  void onChangedDependencies(BuildContext context) {
-    print('onChangedDependencies');
-    super.onChangedDependencies(context);
-  }
-
-  @override
-  void onDeactivate(BuildContext context) {
-    print('onDeactivate');
-    super.onDeactivate(context);
-  }
-
-  @override
-  void onDispose(BuildContext context) {
-    print('onDispose');
-    super.onDispose(context);
-  }
-
-  @override
-  Widget build(
-     BuildContext context,
+  Widget buildRouter(
      RouteInformationProvider routeInformationProvider,
      RouteInformationParser<Object> routeInformationParser,
      RouterDelegate<Object> routerDelegate) {
@@ -61,7 +32,6 @@ class App extends PageWidget {
      localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
-}
 ```
 
 2. Create a **Widget** that represents a page for example:
@@ -97,7 +67,7 @@ class HomeScreen extends StatelessWidget {
 ```dart
 void main() {
   runApp(NavigationRouter(
-    child: const App(), // The PageWidget that builds a Router
+    child: buildRouter, // The RouterBuilder that builds a Router
     pages: [
       NavigationPage(
         path: SplashScreen.path,
@@ -161,19 +131,6 @@ Is the widget core for Navigator 2.0 implementation
 | Name | Description |
 | ---- | ----------- |
 | defaultWebTransition | Is used to get the default web transition that means it does not have any transition when navigating between screens |
-
-#### PageWidget
-Is used to create a **Router** to handle the navigator 2.0. For example into the build we can use the default implementation of **MaterialApp.router**
-
-* Methods
-
-| Name | Description |
-| :--: | ----------- |
-| onInit | Is a shortcut for the method **State.initState** |
-| onChangedDependencies | Is a shortcut for the method **State.didChangeDependencies** |
-| onDeactivate | Is a shortcut for the method **State.deactivate** |
-| onDispose | Is a shortcut for the method **State.dispose** |
-| build | Is used to render a **Router** that handle the Navigator 2.0. |
 
 #### NavigationPage
 Is used to create a page into the **NavigationRouter**

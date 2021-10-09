@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:router_management/src/models/page_arguments.dart';
 
-import 'page_arguments.dart';
+import 'page_route_navigation.dart';
 
-abstract class PageSettings<T> extends Page<void> {
+class PageSettings<T> extends Page<void> {
   final Widget child;
   final bool fullscreenDialog;
   final bool maintainState;
@@ -50,4 +51,7 @@ abstract class PageSettings<T> extends Page<void> {
   PageArguments? get arguments => super.arguments as PageArguments?;
 
   String get path => key.value;
+
+  @override
+  Route<void> createRoute(BuildContext context) => PageRouteNavigation(this);
 }

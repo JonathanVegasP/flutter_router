@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:router_management/src/exceptions/navigation_exception.dart';
+import 'package:router_management/src/services/navigation_service.dart';
+import 'package:router_management/src/ui/navigation_router.dart';
 import 'package:url_strategy/url_strategy.dart';
-
-import '../../core/exceptions/navigation_exception.dart';
-import '../services/navigation_service.dart';
-import '../ui/navigation_router.dart';
 
 mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
   final service = NavigationService.instance as NavigationService;
@@ -20,10 +19,6 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     service.addInitialPage(widget.initialPage);
 
     final pages = widget.pages;
-
-    for (final page in pages) {
-      service.addPage(page);
-    }
 
     assert(() {
       final hasInitialPage = pages.any((p) => p.path == widget.initialPage);
@@ -48,32 +43,10 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
       return true;
     }());
 
-    service.navigationObservers = widget.navigatorObservers;
-    service.restorationScopeId = widget.restorationScopeId;
+    service.pages = pages;
     service.unknownPage = widget.unknownPage;
+    service.restorationScopeId = widget.restorationScopeId;
+    service.navigationObservers = widget.navigatorObservers;
     service.transitionsBuilder = widget.transitionsBuilder;
-
-    widget.child.onInit(context);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    widget.child.onChangedDependencies(context);
-  }
-
-  @override
-  void deactivate() {
-    widget.child.onDeactivate(context);
-
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    widget.child.onDispose(context);
-
-    super.dispose();
   }
 }

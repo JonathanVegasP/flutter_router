@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:router_management/src/models/page_arguments.dart';
 
-import '../models/page_arguments.dart';
+class NavigationParser extends RouteInformationParser<PageArguments> {
+  const NavigationParser();
 
-mixin NavigationParserMixin on RouteInformationParser<PageArguments> {
   @override
   Future<PageArguments> parseRouteInformation(
       RouteInformation routeInformation) async {

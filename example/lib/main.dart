@@ -10,7 +10,7 @@ import 'package:router_management/router_management.dart';
 void main() {
   runApp(
     NavigationRouter(
-      child: const App(), // The PageWidget that builds a Router
+      builder: buildRouter, // The PageWidget that builds a Router
       pages: [
         NavigationPage(
           path: SplashScreen.path,
@@ -39,21 +39,15 @@ void main() {
   );
 }
 
-class App extends PageWidget {
-  const App();
-
-  @override
-  Widget build(
-      BuildContext context,
-      RouteInformationProvider routeInformationProvider,
-      RouteInformationParser<Object> routeInformationParser,
-      RouterDelegate<Object> routerDelegate) {
-    return MaterialApp.router(
-      routeInformationProvider: routeInformationProvider,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
-      title: 'Router Management Example',
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    );
-  }
+Widget buildRouter(
+    RouteInformationProvider routeInformationProvider,
+    RouteInformationParser<Object> routeInformationParser,
+    RouterDelegate<Object> routerDelegate) {
+  return MaterialApp.router(
+    routeInformationProvider: routeInformationProvider,
+    routeInformationParser: routeInformationParser,
+    routerDelegate: routerDelegate,
+    title: 'Router Management Example',
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
+  );
 }

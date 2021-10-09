@@ -1,3 +1,6 @@
+## [2.2.2] - Break Change: Removed PageWidget
+* Break Change: The PageWidget does not exist, use builder instead
+
 ## [2.2.1] - Removed unnecessary Hero controller
 * Removed unnecessary Hero Controller. Use the navigatorObservers to add a custom hero controller
 

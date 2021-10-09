@@ -1,16 +1,20 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/widgets.dart';
+import 'package:router_management/src/mixins/navigation_router_mixin.dart';
+import 'package:router_management/src/models/navigation_page.dart';
+import 'package:router_management/src/services/navigation_parser.dart';
 
-import '../../data/models/navigation_page.dart';
-import '../../data/services/navigation_parser.dart';
-import '../mixins/navigation_router_mixin.dart';
-import '../widgets/page_widget.dart';
+typedef RouterBuilder = Widget Function(
+  RouteInformationProvider routeInformationProvider,
+  RouteInformationParser<Object> routeInformationParser,
+  RouterDelegate<Object> routerDelegate,
+);
 
 /// [NavigationRouter] is the widget core for navigator 2.0 implementation
 class NavigationRouter extends StatefulWidget {
   /// [NavigationRouter.child] is used to build a [Router] to handle the
   /// navigator 2.0
-  final PageWidget child;
+  final RouterBuilder builder;
 
   /// [NavigationRouter.pages] is used to create pages that can be accessed by
   /// the navigator 2.0
@@ -49,7 +53,7 @@ class NavigationRouter extends StatefulWidget {
   /// Is used to create a new instance of [NavigationRouter]
   const NavigationRouter({
     Key? key,
-    required this.child,
+    required this.builder,
     required this.pages,
     this.initialPage = '/',
     this.navigatorObservers = const <NavigatorObserver>[],
@@ -78,11 +82,6 @@ class _NavigationRouterState extends State<NavigationRouter>
     with NavigationRouterMixin {
   @override
   Widget build(BuildContext context) {
-    return widget.child.build(
-      context,
-      provider,
-      const NavigationParser(),
-      service,
-    );
+    return widget.builder(provider, const NavigationParser(), service);
   }
 }
