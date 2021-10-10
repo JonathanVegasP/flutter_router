@@ -12,7 +12,7 @@ typedef RouterBuilder = Widget Function(
 
 /// [NavigationRouter] is the widget core for navigator 2.0 implementation
 class NavigationRouter extends StatefulWidget {
-  /// [NavigationRouter.child] is used to build a [Router] to handle the
+  /// [NavigationRouter.builder] is used to build a [Router] to handle the
   /// navigator 2.0
   final RouterBuilder builder;
 

@@ -1,3 +1,6 @@
+## [2.2.3] - Fix
+* Fixed NavigationObserver
+
 ## [2.2.2] - Break Change: Removed PageWidget
 * Break Change: The PageWidget does not exist, use builder instead
 

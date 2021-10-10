@@ -43,7 +43,7 @@ class NavigationService extends RouterDelegate<PageArguments>
 
   /// Is used internally
   set navigationObservers(List<NavigatorObserver> newValue) {
-    _observers.addAll(newValue);
+    _observers = newValue;
   }
 
   /// This is used internally
