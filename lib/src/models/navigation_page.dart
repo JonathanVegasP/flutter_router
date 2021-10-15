@@ -47,6 +47,9 @@ class NavigationPage {
   /// to the page. Defaults to System's Animation Transition
   final RouteTransitionsBuilder? transitionsBuilder;
 
+  /// This is used internally
+  final bool hasPathParams;
+
   /// Is used to create a new instance of [NavigationPage]
   NavigationPage({
     required this.path,
@@ -58,7 +61,7 @@ class NavigationPage {
     this.restorationId,
     this.name,
     this.transitionsBuilder,
-  }) : assert(() {
+  })  : assert(() {
           if (path.isEmpty || path[0] != '/') {
             throw const NavigationException(
               'NavigationPage.path must begin with "/"',
@@ -66,7 +69,8 @@ class NavigationPage {
           }
 
           return true;
-        }());
+        }()),
+        hasPathParams = path.contains('/:');
 
   /// Is used internally
   Future<bool> call(Navigation navigation, PageArguments arguments) async {

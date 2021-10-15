@@ -1,3 +1,6 @@
+## [2.2.4] - Improved Performance
+* Improved Performance on getting the given page
+
 ## [2.2.3] - Fix
 * Fixed NavigationObserver
 
