@@ -1,3 +1,6 @@
+## [2.2.5] - Fixed iOS navigation
+* Fixed iOS navigation
+
 ## [2.2.4] - Improved Performance
 * Improved Performance on getting the given page
 

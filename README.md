@@ -12,7 +12,7 @@ Open the pubspec.yaml file, search for **dependencies:** and write this below:
 
 ```
 dependencies:
-   router_management: ^2.2.4
+   router_management: ^2.2.5
    ...
 ```
 
