@@ -277,7 +277,7 @@ class NavigationService extends RouterDelegate<PageArguments>
     void onCantActivate() {
       final lastPage = _activePages.last;
 
-      if (lastPage.isInitialPage) pushReplacement(lastPage.arguments as String);
+      if (lastPage.isInitialPage) pushReplacement(lastPage.restorationId!);
     }
 
     if (page == null) {

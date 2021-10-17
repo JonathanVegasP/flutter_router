@@ -43,7 +43,7 @@ class PageSettings<T> extends Page<void> {
         transitionsBuilder = NavigationRouter.defaultWebTransition,
         completer = null,
         isInitialPage = true,
-        super(key: const ValueKey<String>(''), arguments: path);
+        super(key: const ValueKey<String>(''), restorationId: path);
 
   @override
   ValueKey<String> get key => super.key as ValueKey<String>;

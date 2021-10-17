@@ -1,3 +1,6 @@
+## [2.3.3] - Fixed a type error
+* Fixed a type error
+
 ## [2.3.2] - Fixed an bug that activate the animation on initial page
 * Fixed an bug that activate the animation on initial page
 
