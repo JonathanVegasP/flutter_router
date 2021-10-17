@@ -1,3 +1,6 @@
+## [2.2.6] - Lazy argument params
+* Lazy argument params
+
 ## [2.2.5] - Fixed iOS navigation
 * Fixed iOS navigation
 

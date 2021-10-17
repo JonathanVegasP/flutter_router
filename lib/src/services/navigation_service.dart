@@ -62,7 +62,7 @@ class NavigationService extends RouterDelegate<PageArguments>
     for (final page in _pages) {
       if (page.path == arguments.path) return page;
 
-      if(!page.hasPathParams) continue;
+      if (!page.hasPathParams) continue;
 
       final paths = page.path.substring(1).split('/');
 

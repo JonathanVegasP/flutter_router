@@ -8,7 +8,7 @@ class PageArguments {
   final Object? data;
 
   /// [PageArguments.params] is used to get the path's params
-  final Map<String, String> params = {};
+  late final Map<String, String> params = {};
 
   /// [PageArguments.path] is a shortcut from [Uri.path] to get the current path
   late final path = uri.path;
