@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/models/page_arguments.dart';
 
+import 'navigation_router.dart';
 import 'page_route_navigation.dart';
 
 class PageSettings<T> extends Page<void> {
@@ -38,8 +39,8 @@ class PageSettings<T> extends Page<void> {
       : child = const SizedBox(),
         fullscreenDialog = false,
         maintainState = true,
-        transitionDuration = const Duration(milliseconds: 400),
-        transitionsBuilder = null,
+        transitionDuration = Duration.zero,
+        transitionsBuilder = NavigationRouter.defaultWebTransition,
         completer = null,
         isInitialPage = true,
         super(key: const ValueKey<String>(''), arguments: path);
