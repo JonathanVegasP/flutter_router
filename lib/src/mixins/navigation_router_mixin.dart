@@ -16,8 +16,6 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
 
     if (!widget.useHash) setPathUrlStrategy();
 
-    service.addInitialPage(widget.initialPage);
-
     final pages = widget.pages;
 
     assert(() {
@@ -44,6 +42,7 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     }());
 
     service.pages = pages;
+    service.addInitialPage(widget.initialPage);
     service.unknownPage = widget.unknownPage;
     service.restorationScopeId = widget.restorationScopeId;
     service.navigationObservers = widget.navigatorObservers;

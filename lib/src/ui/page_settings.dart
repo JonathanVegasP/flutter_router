@@ -34,7 +34,7 @@ class PageSettings<T> extends Page<void> {
           arguments: arguments,
         );
 
-  PageSettings.initialPage(String path)
+  const PageSettings.initialPage(String path)
       : child = const SizedBox(),
         fullscreenDialog = false,
         maintainState = true,
@@ -42,7 +42,7 @@ class PageSettings<T> extends Page<void> {
         transitionsBuilder = null,
         completer = null,
         isInitialPage = true,
-        super(key: ValueKey<String>(path));
+        super(key: const ValueKey<String>(''), arguments: path);
 
   @override
   ValueKey<String> get key => super.key as ValueKey<String>;

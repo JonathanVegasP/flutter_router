@@ -29,8 +29,8 @@ class NavigationService extends RouterDelegate<PageArguments>
   static late final Navigation instance = NavigationService._();
 
   /// This is used internally
-  void addInitialPage(String page) {
-    _activePages.add(PageSettings.initialPage(page));
+  void addInitialPage(String path) {
+    _activePages.add(PageSettings.initialPage(path));
   }
 
   /// This is used internally
@@ -277,7 +277,7 @@ class NavigationService extends RouterDelegate<PageArguments>
     void onCantActivate() {
       final lastPage = _activePages.last;
 
-      if (lastPage.isInitialPage) pushReplacement(lastPage.path);
+      if (lastPage.isInitialPage) pushReplacement(lastPage.arguments as String);
     }
 
     if (page == null) {
