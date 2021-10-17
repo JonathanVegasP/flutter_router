@@ -12,7 +12,7 @@ Open the pubspec.yaml file, search for **dependencies:** and write this below:
 
 ```
 dependencies:
-   router_management: ^2.2.5
+   router_management: ^2.3.0
    ...
 ```
 
@@ -124,6 +124,7 @@ Is the widget core for Navigator 2.0 implementation
 | useHash | If it is true then will be used the default url strategy that is a path with hash, for example: flutterexample.dev/#/path/to/screen, else will be flutterexample.dev/path/to/screen. Defaults **to false** | false |
 | restorationScopeId | Is used to save and restore the navigator 2.0 state, if it is null then the state will not be saved. Defaults to **null** | false |
 | unknownPage | Is used to create an unknown page with the given path. Defaults to **null** | false |
+| transitionDuration | Is used to controls the animation transition. Defaults to **Duration(milliseconds: 400)** | false |
 | transitionsBuilder | Is used to build a global custom animation transition when navigating to another page. Defaults: **If the platform is web then will not has any transition else will be null** | false |
 
 * Static Methods
@@ -143,7 +144,7 @@ Is used to create a page into the **NavigationRouter**
 | builder | Is used to build the page and create an active page | true |
 | fullscreenDialog | Is used to create a fullscreen dialog page. Defaults to **false** | false |
 | maintainState | If it is false the state of the page will be discarded when navigating to another page. Defaults to **true** | false |
-| transitionDuration | Is used to controls the animation transition. Defaults to **Duration(milliseconds: 400)** | false |
+| transitionDuration | Is used to controls the animation transition. Defaults to **NavigationRouter.transitionDuration** | false |
 | validators | is used to controls the page's activation when it must has more than the basics arguments like an id or something else, if it returns false then the page will be redirect to the initial page or use the **Navigation** to redirect to another page. Defaults to **List.empty()** | false |
 | restorationId | is used to save and restore the page's state, if it is **null** then the state will not be saved. Defaults to **null** | false |
 | name | Is used to name the page. Defaults to **null** | false |

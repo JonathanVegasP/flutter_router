@@ -1,3 +1,7 @@
+## [2.3.0] - Added a transitionDuration param to the NavigationRouter
+* Added a transitionDuration param to the NavigationRouter, now the NavigationPage.transitionDuration
+is an optional param and the NavigationRouter.transitionDuration will be used as a globally duration.
+
 ## [2.2.6] - Lazy argument params
 * Lazy argument params
 

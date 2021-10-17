@@ -25,8 +25,8 @@ class NavigationPage {
   final bool maintainState;
 
   /// [transitionDuration] is used to controls the animation
-  /// transition. Defaults to [Duration(milliseconds: 400)]
-  final Duration transitionDuration;
+  /// transition. Defaults to [NavigationRouter.transitionDuration]
+  final Duration? transitionDuration;
 
   /// [validators] is used to controls the page's activation when
   /// it must has more than the basics arguments like an id or something else,
@@ -56,7 +56,7 @@ class NavigationPage {
     required this.builder,
     this.fullscreenDialog = false,
     this.maintainState = true,
-    this.transitionDuration = const Duration(milliseconds: 400),
+    this.transitionDuration,
     this.validators = const <PageValidator>[],
     this.restorationId,
     this.name,

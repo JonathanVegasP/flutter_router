@@ -15,6 +15,7 @@ class NavigationService extends RouterDelegate<PageArguments>
   final _activePages = <PageSettings>[];
   late final List<NavigationPage> _pages;
   late final NavigationPage? _unknownPage;
+  late final Duration _transitionDuration;
   late final RouteTransitionsBuilder? _transitionsBuilder;
   late final List<NavigatorObserver> _observers;
   String? _restorationScopeId;
@@ -45,6 +46,9 @@ class NavigationService extends RouterDelegate<PageArguments>
   set navigationObservers(List<NavigatorObserver> newValue) {
     _observers = newValue;
   }
+
+  /// This is used internally
+  set transitionDuration(Duration newValue) => _transitionDuration = newValue;
 
   /// This is used internally
   set transitionsBuilder(RouteTransitionsBuilder? newValue) {
@@ -99,7 +103,7 @@ class NavigationService extends RouterDelegate<PageArguments>
       page.builder(),
       page.fullscreenDialog,
       page.maintainState,
-      page.transitionDuration,
+      page.transitionDuration ?? _transitionDuration,
       page.transitionsBuilder ?? _transitionsBuilder,
       _activePages.isEmpty,
     );

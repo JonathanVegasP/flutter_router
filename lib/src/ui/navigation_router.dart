@@ -45,6 +45,10 @@ class NavigationRouter extends StatefulWidget {
   /// given path
   final NavigationPage? unknownPage;
 
+  /// [transitionDuration] is used to controls the animation
+  /// transition. Defaults to [Duration(milliseconds: 400)]
+  final Duration transitionDuration;
+
   /// [NavigationRouter.transitionsBuilder] is used to build a global custom
   /// animation transition when navigating to another page. Defaults: if the
   /// platform is web then will not have any transition else will be [null]
@@ -60,6 +64,7 @@ class NavigationRouter extends StatefulWidget {
     this.useHash = false,
     this.restorationScopeId,
     this.unknownPage,
+    this.transitionDuration = const Duration(milliseconds: 400),
     this.transitionsBuilder = kIsWeb ? defaultWebTransition : null,
   }) : super(key: key);
 
