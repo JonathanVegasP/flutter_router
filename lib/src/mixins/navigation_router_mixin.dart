@@ -7,7 +7,7 @@ import 'package:url_strategy/url_strategy.dart';
 mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
   final service = NavigationService.instance as NavigationService;
   late final provider = PlatformRouteInformationProvider(
-    initialRouteInformation: RouteInformation(location: widget.initialPage),
+    initialRouteInformation: RouteInformation(location: WidgetsBinding.instance!.window.defaultRouteName),
   );
 
   @override

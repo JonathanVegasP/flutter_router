@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/models/page_arguments.dart';
 
-import 'navigation_router.dart';
 import 'page_route_navigation.dart';
 
 class PageSettings<T> extends Page<void> {
@@ -34,16 +33,6 @@ class PageSettings<T> extends Page<void> {
           restorationId: restorationId,
           arguments: arguments,
         );
-
-  const PageSettings.initialPage(String path)
-      : child = const SizedBox(),
-        fullscreenDialog = false,
-        maintainState = true,
-        transitionDuration = Duration.zero,
-        transitionsBuilder = NavigationRouter.defaultWebTransition,
-        completer = null,
-        isInitialPage = true,
-        super(key: const ValueKey<String>(''), restorationId: path);
 
   @override
   ValueKey<String> get key => super.key as ValueKey<String>;
