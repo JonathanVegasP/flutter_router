@@ -42,11 +42,11 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     }());
 
     service.pages = pages;
-    service.addInitialPage(widget.initialPage);
     service.unknownPage = widget.unknownPage;
     service.restorationScopeId = widget.restorationScopeId;
     service.navigationObservers = widget.navigatorObservers;
     service.transitionDuration = widget.transitionDuration;
     service.transitionsBuilder = widget.transitionsBuilder;
+    service.addInitialPage(widget.initialPage);
   }
 }
