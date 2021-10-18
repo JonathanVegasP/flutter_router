@@ -1,3 +1,7 @@
+## [2.3.7] - Improved performance
+
+## [2.3.6] - Fixed initial route
+
 ## [2.3.5] - Fixed bug
 
 ## [2.3.4] - Improved performance

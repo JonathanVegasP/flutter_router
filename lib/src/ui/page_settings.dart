@@ -12,7 +12,6 @@ class PageSettings<T> extends Page<void> {
   final Duration transitionDuration;
   final RouteTransitionsBuilder? transitionsBuilder;
   final Completer<T?>? completer;
-  final bool isInitialPage;
 
   PageSettings(
     String path,
@@ -26,7 +25,6 @@ class PageSettings<T> extends Page<void> {
     this.transitionsBuilder,
     bool isCompleted,
   )   : completer = isCompleted ? null : Completer(),
-        isInitialPage = false,
         super(
           key: ValueKey<String>(path),
           name: name,
@@ -34,11 +32,13 @@ class PageSettings<T> extends Page<void> {
           arguments: arguments,
         );
 
+  bool get isInitialPage => path.isEmpty;
+
   @override
   ValueKey<String> get key => super.key as ValueKey<String>;
 
   @override
-  PageArguments? get arguments => super.arguments as PageArguments?;
+  PageArguments get arguments => super.arguments as PageArguments;
 
   String get path => key.value;
 
