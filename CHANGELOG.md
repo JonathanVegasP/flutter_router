@@ -1,3 +1,6 @@
+## [2.3.4] - Improved performance
+* Improved performance
+
 ## [2.3.3] - Fixed a type error
 * Fixed a type error
 
