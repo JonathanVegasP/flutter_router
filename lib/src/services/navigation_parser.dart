@@ -1,17 +1,16 @@
 import 'package:flutter/widgets.dart';
-import 'package:router_management/src/models/page_arguments.dart';
 
-class NavigationParser extends RouteInformationParser<PageArguments> {
+class NavigationParser extends RouteInformationParser<String> {
   const NavigationParser();
 
   @override
-  Future<PageArguments> parseRouteInformation(
+  Future<String> parseRouteInformation(
       RouteInformation routeInformation) async {
-    return PageArguments(Uri.parse(routeInformation.location!));
+    return routeInformation.location!;
   }
 
   @override
-  RouteInformation? restoreRouteInformation(PageArguments configuration) {
-    return RouteInformation(location: configuration.completePath);
+  RouteInformation? restoreRouteInformation(String configuration) {
+    return RouteInformation(location: configuration);
   }
 }

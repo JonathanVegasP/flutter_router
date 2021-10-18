@@ -7,11 +7,8 @@ import 'package:router_management/src/ui/page_settings.dart';
 
 /// [NavigationService] is the core class that is used to get the actual
 /// [Navigation] instance
-class NavigationService extends RouterDelegate<PageArguments>
-    with
-        ChangeNotifier,
-        PopNavigatorRouterDelegateMixin<PageArguments>,
-        Navigation {
+class NavigationService extends RouterDelegate<String>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<String>, Navigation {
   final _activePages = <PageSettings>[];
   late final List<NavigationPage> _pages;
   late final NavigationPage? _unknownPage;
@@ -30,7 +27,13 @@ class NavigationService extends RouterDelegate<PageArguments>
 
   /// This is used internally
   void addInitialPage(String path) {
-    _activePages.add(PageSettings.initialPage(path));
+    for (final page in _pages) {
+      if (page.path == path) {
+        _activePages.add(_buildSettings(page, _buildArgs(path)));
+
+        break;
+      }
+    }
   }
 
   /// This is used internally
@@ -239,9 +242,7 @@ class NavigationService extends RouterDelegate<PageArguments>
 
     if (shouldResetPages) _activePages.clear();
 
-    _activePages.add(
-      _buildSettings(unknownPage, _buildArgs(unknownPage.path, null)),
-    );
+    _activePages.add(_buildSettings(unknownPage, _buildArgs(unknownPage.path)));
 
     notifyListeners();
   }
@@ -271,55 +272,47 @@ class NavigationService extends RouterDelegate<PageArguments>
   }
 
   @override
-  Future<void> setNewRoutePath(PageArguments configuration) async {
-    final page = _getPage(configuration);
+  Future<void> setNewRoutePath(String configuration) async {
+    if (configuration == _activePages.last.path) return;
 
-    void onCantActivate() {
-      final lastPage = _activePages.last;
+    final args = _buildArgs(configuration);
 
-      if (lastPage.isInitialPage) pushReplacement(lastPage.restorationId!);
-    }
+    final page = _getPage(args);
 
     if (page == null) {
       pushToUnknownPage();
 
-      onCantActivate();
-
       return;
     }
 
-    if (!(await page(this, configuration))) {
-      onCantActivate();
-
-      return;
-    }
+    if (!(await page(this, args))) return;
 
     _activePages.clear();
 
-    final length = configuration.paths.length - 1;
+    final length = args.paths.length - 1;
 
     final buffer = StringBuffer();
 
     for (var i = 0; i < length; i++) {
       buffer.write('/');
-      buffer.write(configuration.paths[i]);
+      buffer.write(args.paths[i]);
 
-      final arguments = PageArguments(Uri.parse(buffer.toString()));
+      final arguments = _buildArgs(buffer.toString());
 
       final page = _getPage(arguments);
 
       if (page == null) continue;
 
-      if (!(await page(this, configuration))) return;
+      if (!(await page(this, args))) return;
 
       _activePages.add(_buildSettings(page, arguments));
     }
 
-    _activePages.add(_buildSettings(page, configuration));
+    _activePages.add(_buildSettings(page, args));
 
     notifyListeners();
   }
 
   @override
-  PageArguments? get currentConfiguration => _activePages.last.arguments;
+  String? get currentConfiguration => _activePages.last.arguments?.completePath;
 }
