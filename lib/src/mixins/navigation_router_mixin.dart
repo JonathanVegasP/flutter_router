@@ -8,9 +8,16 @@ import 'package:url_strategy/url_strategy.dart';
 mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
   final service = NavigationService.instance as NavigationService;
   late final provider = PlatformRouteInformationProvider(
-    initialRouteInformation: RouteInformation(
-        location: WidgetsBinding.instance!.window.defaultRouteName),
+    initialRouteInformation: RouteInformation(location: _initialPage),
   );
+
+  String get _initialPage {
+    final route = WidgetsBinding.instance!.window.defaultRouteName;
+
+    if (route == Navigator.defaultRouteName) return widget.initialPage;
+
+    return route;
+  }
 
   @override
   void initState() {
@@ -49,7 +56,7 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     service.navigationObservers = widget.navigatorObservers;
     service.transitionDuration = widget.transitionDuration;
     service.transitionsBuilder = widget.transitionsBuilder;
-    service.addInitialPage(widget.initialPage);
+    service.addInitialPage(provider.value.location!);
 
     widget.child.routeInformationProvider = provider;
     widget.child.routerDelegate = service;

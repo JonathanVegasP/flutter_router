@@ -27,20 +27,13 @@ class NavigationService extends RouterDelegate<String>
 
   /// This is used internally
   void addInitialPage(String path) {
-    _activePages.add(
-      PageSettings(
-        '',
-        null,
-        null,
-        _buildArgs(path),
-        const SizedBox(),
-        false,
-        false,
-        Duration.zero,
-        null,
-        true,
-      ),
-    );
+    final args = _buildArgs(path);
+
+    final page = _getPage(args);
+
+    assert(page != null);
+
+    _activePages.add(_buildSettings(page!, args));
   }
 
   /// This is used internally
@@ -280,6 +273,8 @@ class NavigationService extends RouterDelegate<String>
 
   @override
   Future<void> setNewRoutePath(String configuration) async {
+    if (configuration == _activePages.last.path) return;
+
     final args = _buildArgs(configuration);
 
     final page = _getPage(args);
