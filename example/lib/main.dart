@@ -10,7 +10,7 @@ import 'package:router_management/router_management.dart';
 void main() {
   runApp(
     NavigationRouter(
-      builder: buildRouter, // The PageWidget that builds a Router
+      child: App(), // The NavigationWidgetMixin that builds a Router
       pages: [
         NavigationPage(
           path: SplashScreen.path,
@@ -39,15 +39,39 @@ void main() {
   );
 }
 
-Widget buildRouter(
-    RouteInformationProvider routeInformationProvider,
-    RouteInformationParser<Object> routeInformationParser,
-    RouterDelegate<Object> routerDelegate) {
-  return MaterialApp.router(
-    routeInformationProvider: routeInformationProvider,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
-    title: 'Router Management Example',
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-  );
+class App extends StatelessWidget with NavigationWidgetMixin {
+  App({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routeInformationProvider: routeInformationProvider,
+      routeInformationParser: routeInformationParser,
+      routerDelegate: routerDelegate,
+      title: 'Router Management Example',
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    );
+  }
 }
+
+// or
+
+// class App extends StatefulWidget with NavigationWidgetMixin {
+//   App({Key? key}) : super(key: key);
+//
+//   @override
+//   _AppState createState() => _AppState();
+// }
+//
+// class _AppState extends State<App> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp.router(
+//       routeInformationProvider: widget.routeInformationProvider,
+//       routeInformationParser: widget.routeInformationParser,
+//       routerDelegate: widget.routerDelegate,
+//       title: 'Router Management Example',
+//       localizationsDelegates: GlobalMaterialLocalizations.delegates,
+//     );
+//   }
+// }

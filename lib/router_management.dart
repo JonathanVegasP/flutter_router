@@ -9,3 +9,4 @@ export 'src/services/navigation_service.dart';
 export 'src/ui/navigation_router.dart';
 export 'src/ui/page_settings.dart';
 export 'src/validators/page_validator.dart';
+export 'src/mixins/navigation_widget_mixin.dart';

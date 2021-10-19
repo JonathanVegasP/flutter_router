@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/exceptions/navigation_exception.dart';
+import 'package:router_management/src/services/navigation_parser.dart';
 import 'package:router_management/src/services/navigation_service.dart';
 import 'package:router_management/src/ui/navigation_router.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -7,7 +8,8 @@ import 'package:url_strategy/url_strategy.dart';
 mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
   final service = NavigationService.instance as NavigationService;
   late final provider = PlatformRouteInformationProvider(
-    initialRouteInformation: RouteInformation(location: WidgetsBinding.instance!.window.defaultRouteName),
+    initialRouteInformation: RouteInformation(
+        location: WidgetsBinding.instance!.window.defaultRouteName),
   );
 
   @override
@@ -48,5 +50,9 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     service.transitionDuration = widget.transitionDuration;
     service.transitionsBuilder = widget.transitionsBuilder;
     service.addInitialPage(widget.initialPage);
+
+    widget.child.routeInformationProvider = provider;
+    widget.child.routerDelegate = service;
+    widget.child.routeInformationParser = const NavigationParser();
   }
 }

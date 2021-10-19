@@ -1,3 +1,7 @@
+## [3.0.0] - Break Change: The NavigationRouter.builder does not exists anymore.
+* Break Change: The NavigationRouter.builder does not exists, use child with NavigationWidgetMixin
+instead.
+
 ## [2.3.7] - Improved performance
 
 ## [2.3.6] - Fixed initial route

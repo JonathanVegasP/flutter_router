@@ -12,26 +12,52 @@ Open the pubspec.yaml file, search for **dependencies:** and write this below:
 
 ```
 dependencies:
-   router_management: ^2.3.7
+   router_management: ^3.0.0
    ...
 ```
 
 ## Usage
-1. Create a **RouterBuilder** that builds a **Router** for example:
+1. Create a **NavigationWidgetMixin** that builds a **Router** for example:
 
 ```dart
-  Widget buildRouter(
-     RouteInformationProvider routeInformationProvider,
-     RouteInformationParser<Object> routeInformationParser,
-     RouterDelegate<Object> routerDelegate) {
-   return MaterialApp.router(
-     routeInformationProvider: routeInformationProvider,
-     routeInformationParser: routeInformationParser,
-     routerDelegate: routerDelegate,
-     title: 'Router Management Example',
-     localizationsDelegates: GlobalMaterialLocalizations.delegates,
+class App extends StatelessWidget with NavigationWidgetMixin {
+  App({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routeInformationProvider: routeInformationProvider,
+      routeInformationParser: routeInformationParser,
+      routerDelegate: routerDelegate,
+      title: 'Router Management Example',
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
+}
+```
+
+* Or
+
+```dart
+class App extends StatefulWidget with NavigationWidgetMixin {
+  App({Key? key}) : super(key: key);
+
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routeInformationProvider: widget.routeInformationProvider,
+      routeInformationParser: widget.routeInformationParser,
+      routerDelegate: widget.routerDelegate,
+      title: 'Router Management Example',
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    );
+  }
+}
 ```
 
 2. Create a **Widget** that represents a page for example:
@@ -67,7 +93,7 @@ class HomeScreen extends StatelessWidget {
 ```dart
 void main() {
   runApp(NavigationRouter(
-    child: buildRouter, // The RouterBuilder that builds a Router
+    child: App(), // The NavigationWidgetMixin that builds a Router
     pages: [
       NavigationPage(
         path: SplashScreen.path,

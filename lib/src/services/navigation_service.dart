@@ -15,7 +15,7 @@ class NavigationService extends RouterDelegate<String>
   late final Duration _transitionDuration;
   late final RouteTransitionsBuilder? _transitionsBuilder;
   late final List<NavigatorObserver> _observers;
-  String? _restorationScopeId;
+  late final String? _restorationScopeId;
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
 
