@@ -1,3 +1,5 @@
+## [3.0.1] - Fixed initial page for navigatorObservers
+
 ## [3.0.0] - Break Change: The NavigationRouter.builder does not exists anymore.
 * Break Change: The NavigationRouter.builder does not exists, use child with NavigationWidgetMixin
 instead.
