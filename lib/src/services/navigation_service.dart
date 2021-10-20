@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/exceptions/navigation_exception.dart';
 import 'package:router_management/src/mixins/navigation.dart';
@@ -10,12 +12,12 @@ import 'package:router_management/src/ui/page_settings.dart';
 class NavigationService extends RouterDelegate<String>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<String>, Navigation {
   final _activePages = <PageSettings>[];
-  late final List<NavigationPage> _pages;
-  late final NavigationPage? _unknownPage;
-  late final Duration _transitionDuration;
-  late final RouteTransitionsBuilder? _transitionsBuilder;
-  late final List<NavigatorObserver> _observers;
-  late final String? _restorationScopeId;
+  late final List<NavigationPage> pages;
+  late final NavigationPage? unknownPage;
+  late final Duration transitionDuration;
+  late final RouteTransitionsBuilder? transitionsBuilder;
+  late final List<NavigatorObserver> observers;
+  late final String? restorationScopeId;
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -26,36 +28,13 @@ class NavigationService extends RouterDelegate<String>
   static late final Navigation instance = NavigationService._();
 
   /// This is used internally
-  void addInitialPage(String path) {
-    final args = _buildArgs(path);
-
-    final page = _getPage(args);
-
-    assert(page != null);
-
-    _activePages.add(_buildSettings(page!, args));
-  }
-
-  /// This is used internally
-  set pages(List<NavigationPage> newValue) => _pages = newValue;
-
-  /// This is used internally
-  set unknownPage(NavigationPage? newValue) => _unknownPage = newValue;
-
-  /// Is used internally
-  set restorationScopeId(String? newValue) => _restorationScopeId = newValue;
-
-  /// Is used internally
-  set navigationObservers(List<NavigatorObserver> newValue) {
-    _observers = newValue;
-  }
-
-  /// This is used internally
-  set transitionDuration(Duration newValue) => _transitionDuration = newValue;
-
-  /// This is used internally
-  set transitionsBuilder(RouteTransitionsBuilder? newValue) {
-    _transitionsBuilder = newValue;
+  void initialize(String path) {
+    _activePages.add(PageSettings(
+      path: '',
+      arguments: _buildArgs(path),
+      child: const SizedBox(),
+      isCompleted: true,
+    ));
   }
 
   PageArguments _buildArgs(String page, [Object? data]) {
@@ -66,7 +45,7 @@ class NavigationService extends RouterDelegate<String>
   NavigationPage? _getPage(PageArguments arguments) {
     final length = arguments.paths.length;
 
-    for (final page in _pages) {
+    for (final page in pages) {
       if (page.path == arguments.path) return page;
 
       if (!page.hasPathParams) continue;
@@ -99,16 +78,16 @@ class NavigationService extends RouterDelegate<String>
   PageSettings<T> _buildSettings<T>(
       NavigationPage page, PageArguments arguments) {
     return PageSettings<T>(
-      page.path,
-      page.restorationId,
-      page.name,
-      arguments,
-      page.builder(),
-      page.fullscreenDialog,
-      page.maintainState,
-      page.transitionDuration ?? _transitionDuration,
-      page.transitionsBuilder ?? _transitionsBuilder,
-      _activePages.isEmpty,
+      path: page.path,
+      restorationId: page.restorationId,
+      name: page.name,
+      arguments: arguments,
+      child: page.builder(),
+      fullscreenDialog: page.fullscreenDialog,
+      maintainState: page.maintainState,
+      transitionDuration: page.transitionDuration ?? transitionDuration,
+      transitionsBuilder: page.transitionsBuilder ?? transitionsBuilder,
+      isCompleted: _activePages.isEmpty,
     );
   }
 
@@ -236,7 +215,7 @@ class NavigationService extends RouterDelegate<String>
 
   @override
   void pushToUnknownPage([bool shouldResetPages = true]) {
-    final unknownPage = _unknownPage;
+    final unknownPage = this.unknownPage;
 
     if (unknownPage == null) return;
 
@@ -264,17 +243,16 @@ class NavigationService extends RouterDelegate<String>
   Widget build(BuildContext context) {
     return Navigator(
       key: navigatorKey,
-      restorationScopeId: _restorationScopeId,
-      observers: _observers,
+      restorationScopeId: restorationScopeId,
+      observers: observers,
       pages: List.unmodifiable(_activePages),
       onPopPage: _onPopPage,
+      transitionDelegate: const _DefaultTransitionDelegate(),
     );
   }
 
   @override
   Future<void> setNewRoutePath(String configuration) async {
-    if (configuration == _activePages.last.path) return;
-
     final args = _buildArgs(configuration);
 
     final page = _getPage(args);
@@ -318,5 +296,90 @@ class NavigationService extends RouterDelegate<String>
   }
 
   @override
-  String? get currentConfiguration => _activePages.last.arguments.completePath;
+  String? get currentConfiguration => _activePages.last.arguments.path;
+}
+
+class _DefaultTransitionDelegate<T> extends TransitionDelegate<T> {
+  const _DefaultTransitionDelegate() : super();
+
+  static late var _shouldAnimate = false;
+
+  @override
+  Iterable<RouteTransitionRecord> resolve({
+    required List<RouteTransitionRecord> newPageRouteHistory,
+    required Map<RouteTransitionRecord?, RouteTransitionRecord>
+        locationToExitingPageRoute,
+    required Map<RouteTransitionRecord?, List<RouteTransitionRecord>>
+        pageRouteToPagelessRoutes,
+  }) {
+    final results = <RouteTransitionRecord>[];
+
+    void handleExistingRoute(RouteTransitionRecord? key, bool isLast) {
+      final exitingPageRoute = locationToExitingPageRoute[key];
+
+      if (exitingPageRoute == null) return;
+
+      if (exitingPageRoute.isWaitingForExitingDecision) {
+        final pagelessRoutes = pageRouteToPagelessRoutes[exitingPageRoute];
+        final hasPagelessRoutes = pagelessRoutes != null;
+        final isLastExistingPageRoute =
+            isLast && !locationToExitingPageRoute.containsKey(exitingPageRoute);
+
+        if (isLastExistingPageRoute && !hasPagelessRoutes) {
+          exitingPageRoute.markForPop(exitingPageRoute.route.currentResult);
+        } else {
+          exitingPageRoute
+              .markForComplete(exitingPageRoute.route.currentResult);
+        }
+
+        if (hasPagelessRoutes) {
+          final length = pagelessRoutes!.length - 1;
+
+          for (var i = 0; i <= length; i++) {
+            final route = pagelessRoutes[i];
+
+            if (route.isWaitingForExitingDecision) {
+              if (isLastExistingPageRoute && i == length) {
+                route.markForPop(route.route.currentResult);
+              } else {
+                route.markForComplete(route.route.currentResult);
+              }
+            }
+          }
+        }
+      }
+
+      results.add(exitingPageRoute);
+
+      handleExistingRoute(exitingPageRoute, isLast);
+    }
+
+    handleExistingRoute(null, newPageRouteHistory.isEmpty);
+
+    final length = newPageRouteHistory.length - 1;
+
+    for (var i = 0; i <= length; i++) {
+      final isLast = i == length;
+      final pageRoute = newPageRouteHistory[i];
+
+      if (pageRoute.isWaitingForEnteringDecision) {
+        if (!_shouldAnimate) {
+          _shouldAnimate = true;
+
+          pageRoute.markForAdd();
+        } else if (isLast &&
+            !locationToExitingPageRoute.containsKey(pageRoute)) {
+          pageRoute.markForPush();
+        } else {
+          pageRoute.markForAdd();
+        }
+      }
+
+      results.add(pageRoute);
+
+      handleExistingRoute(pageRoute, isLast);
+    }
+
+    return results;
+  }
 }

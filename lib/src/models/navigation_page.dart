@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/exceptions/navigation_exception.dart';
 import 'package:router_management/src/mixins/navigation.dart';
+import 'package:router_management/src/mixins/page_validator.dart';
 import 'package:router_management/src/models/page_arguments.dart';
-import 'package:router_management/src/validators/page_validator.dart';
 
 /// [NavigationPage] is used to create a page into the [NavigationRouter]
 class NavigationPage {

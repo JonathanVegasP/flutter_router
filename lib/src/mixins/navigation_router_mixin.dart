@@ -51,12 +51,12 @@ mixin NavigationRouterMixin<T extends NavigationRouter> on State<T> {
     }());
 
     service.pages = pages;
+    service.observers = widget.navigatorObservers;
     service.unknownPage = widget.unknownPage;
     service.restorationScopeId = widget.restorationScopeId;
-    service.navigationObservers = widget.navigatorObservers;
     service.transitionDuration = widget.transitionDuration;
     service.transitionsBuilder = widget.transitionsBuilder;
-    service.addInitialPage(provider.value.location!);
+    service.initialize(widget.initialPage);
 
     widget.child.routeInformationProvider = provider;
     widget.child.routerDelegate = service;

@@ -13,18 +13,18 @@ class PageSettings<T> extends Page<void> {
   final RouteTransitionsBuilder? transitionsBuilder;
   final Completer<T?>? completer;
 
-  PageSettings(
-    String path,
+  PageSettings({
+    required String path,
     String? restorationId,
     String? name,
-    PageArguments arguments,
-    this.child,
-    this.fullscreenDialog,
-    this.maintainState,
-    this.transitionDuration,
+    required PageArguments arguments,
+    required this.child,
+    this.fullscreenDialog = false,
+    this.maintainState = true,
+    this.transitionDuration = Duration.zero,
     this.transitionsBuilder,
-    bool isCompleted,
-  )   : completer = isCompleted ? null : Completer(),
+    required bool isCompleted,
+  })  : completer = isCompleted ? null : Completer(),
         super(
           key: ValueKey<String>(path),
           name: name,
