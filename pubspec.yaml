@@ -1,6 +1,6 @@
 name: router_management
 description: A plugin that wraps the Navigator 2.0 with a syntax sugar for Flutter Developers
-version: 3.0.1
+version: 3.0.2
 homepage: https://vegasdevelopments.com
 repository: https://github.com/JonathanVegasP/flutter_router
 issue_tracker: https://github.com/JonathanVegasP/flutter_router/issues

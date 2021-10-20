@@ -1,3 +1,6 @@
+## [3.0.2] - Fixed page validators
+* Fixed a bug that was happening with page validators
+
 ## [3.0.1] - Fixed initial page for navigatorObservers
 
 ## [3.0.0] - Break Change: The NavigationRouter.builder does not exists anymore.
