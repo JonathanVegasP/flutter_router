@@ -279,7 +279,9 @@ class NavigationService extends RouterDelegate<PageArguments>
     final page = _getPage(configuration);
 
     if (page == null) {
-      pushToUnknownPage();
+      final result = pushToUnknownPage();
+
+      if (!result) setNewRoutePath(_buildArgs(_initialPage));
 
       return;
     }

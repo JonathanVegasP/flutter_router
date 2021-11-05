@@ -12,7 +12,7 @@ Open the pubspec.yaml file, search for **dependencies:** and write this below:
 
 ```
 dependencies:
-   router_management: ^3.0.2
+   router_management: ^3.1.0
    ...
 ```
 
@@ -26,7 +26,6 @@ class App extends StatelessWidget with NavigationWidgetMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationProvider: routeInformationProvider,
       routeInformationParser: routeInformationParser,
       routerDelegate: routerDelegate,
       title: 'Router Management Example',
@@ -50,7 +49,6 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationProvider: widget.routeInformationProvider,
       routeInformationParser: widget.routeInformationParser,
       routerDelegate: widget.routerDelegate,
       title: 'Router Management Example',
@@ -159,6 +157,20 @@ Is the widget core for Navigator 2.0 implementation
 | ---- | ----------- |
 | defaultWebTransition | Is used to get the default web transition that means it does not have any transition when navigating between screens |
 
+#### NavigationRouterGuard
+Is used to validate the page, if the page can't be activated, then will be redirected to another
+page.
+
+* Props
+
+| Name | Description | Required |
+| :--: | ----------- | :------: |
+| child | Is used to build the page when it can be activated | true |
+| validation | Is used to process if the page can be activated or not | true |
+| placeholder | Is used to build a placeholder while is activating. Defaults to **SizedBox.shrink()** |
+| pathToRedirectOnInvalidate | Is used to redirect to a page when **redirectToUnknownPageOnInvalidate** is **false** or if was not set an unknown page in the **NavigationRouter**. Defaults to **"/"** | false |
+| redirectToUnknownPageOnInvalidate | Is used to redirect to the unknown page, if it was not set or the value is **false**, then will be redirect using **pathToRedirectOnInvalidate**. Defaults to **true** | false |
+
 #### NavigationPage
 Is used to create a page into the **NavigationRouter**
 
@@ -221,15 +233,6 @@ Is used to get the current page's arguments
 | completePath | Is a shortcut from **Uri.toString()** to get the current complete path |
 | query | Is a shortcut from **Uri.queryParameters** to get the current query as a **Map<String,String>** object |
 | queries | Is a shortcut from **Uri.queryParametersAll** to get the current list of queries as a **Map<String,List\<String>>** object
-
-#### PageValidator
-Can be used to validate any pages with **NavigationPage.validators**
-
-* Methods
-
-| Name | Description |
-| :--: | ----------- |
-| call | If it returns false then the page cannot be activated and can be used to redirect to another page when it is needed |
 
 ## Extensions
 
