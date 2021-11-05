@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/exceptions/navigation_exception.dart';
-import 'package:router_management/src/mixins/navigation.dart';
-import 'package:router_management/src/mixins/page_validator.dart';
+import 'package:router_management/src/mixins/path_to_regex.dart';
 import 'package:router_management/src/models/page_arguments.dart';
 
 /// [NavigationPage] is used to create a page into the [NavigationRouter]
@@ -28,13 +27,6 @@ class NavigationPage {
   /// transition. Defaults to [NavigationRouter.transitionDuration]
   final Duration? transitionDuration;
 
-  /// [validators] is used to controls the page's activation when
-  /// it must has more than the basics arguments like an id or something else,
-  /// if it returns false then the page will be redirect to the initial page or
-  /// use the [Navigation] to redirect to another page. Defaults to
-  /// [List.empty()]
-  final List<PageValidator> validators;
-
   /// [NavigationPage.restorationId] is used to save and restore the page's
   /// state, if it is [null] then the state will not be saved. Defaults to
   /// [null]
@@ -47,8 +39,9 @@ class NavigationPage {
   /// to the page. Defaults to System's Animation Transition
   final RouteTransitionsBuilder? transitionsBuilder;
 
-  /// This is used internally
-  final bool hasPathParams;
+  late final RegExp _regExp;
+
+  late final _params = <String>[];
 
   /// Is used to create a new instance of [NavigationPage]
   NavigationPage({
@@ -57,25 +50,29 @@ class NavigationPage {
     this.fullscreenDialog = false,
     this.maintainState = true,
     this.transitionDuration,
-    this.validators = const <PageValidator>[],
     this.restorationId,
     this.name,
     this.transitionsBuilder,
-  })  : assert(() {
-          if (path.isEmpty || path[0] != '/') {
+  }) : assert(() {
+          if (!path.startsWith('/')) {
             throw const NavigationException(
               'NavigationPage.path must begin with "/"',
             );
           }
 
           return true;
-        }()),
-        hasPathParams = path.contains('/:');
+        }()) {
+    _regExp = PathToRegex.parse(path, _params);
+  }
 
-  /// Is used internally
-  Future<bool> call(Navigation navigation, PageArguments arguments) async {
-    for (final validator in validators) {
-      if (!(await validator(this, navigation, arguments))) return false;
+  /// This is used internally
+  bool call(PageArguments arguments) {
+    final match = _regExp.matchAsPrefix(arguments.path);
+
+    if (match == null) return false;
+
+    if (_params.isNotEmpty) {
+      arguments.params.addAll(PathToRegex.getParams(_params, match));
     }
 
     return true;

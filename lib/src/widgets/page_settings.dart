@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:async' show Completer;
 
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/models/page_arguments.dart';

@@ -1,23 +1,28 @@
-import 'dart:async';
+import 'dart:async' show scheduleMicrotask;
 
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/exceptions/navigation_exception.dart';
 import 'package:router_management/src/mixins/navigation.dart';
 import 'package:router_management/src/models/navigation_page.dart';
 import 'package:router_management/src/models/page_arguments.dart';
-import 'package:router_management/src/ui/page_settings.dart';
+import 'package:router_management/src/widgets/page_settings.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 /// [NavigationService] is the core class that is used to get the actual
 /// [Navigation] instance
-class NavigationService extends RouterDelegate<String>
-    with ChangeNotifier, PopNavigatorRouterDelegateMixin<String>, Navigation {
+class NavigationService extends RouterDelegate<PageArguments>
+    with
+        ChangeNotifier,
+        PopNavigatorRouterDelegateMixin<PageArguments>,
+        Navigation {
   final _activePages = <PageSettings>[];
-  late final List<NavigationPage> pages;
-  late final NavigationPage? unknownPage;
-  late final Duration transitionDuration;
-  late final RouteTransitionsBuilder? transitionsBuilder;
-  late final List<NavigatorObserver> observers;
-  late final String? restorationScopeId;
+  late final String _initialPage;
+  late final List<NavigationPage> _pages;
+  late final NavigationPage? _unknownPage;
+  late final Duration _transitionDuration;
+  late final RouteTransitionsBuilder? _transitionsBuilder;
+  late final List<NavigatorObserver> _observers;
+  late final String? _restorationScopeId;
   @override
   final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -27,14 +32,64 @@ class NavigationService extends RouterDelegate<String>
   /// [NavigationService.instance] is the implementation of navigator 2.0
   static late final Navigation instance = NavigationService._();
 
+  @override
+  Future<void> setInitialRoutePath(PageArguments configuration) async {}
+
+  @override
+  void notifyListeners() {
+    scheduleMicrotask(super.notifyListeners);
+  }
+
   /// This is used internally
-  void initialize(String path) {
-    _activePages.add(PageSettings(
-      path: '',
-      arguments: _buildArgs(path),
-      child: const SizedBox(),
-      isCompleted: true,
-    ));
+  void initialize({
+    required String initialPage,
+    required List<NavigationPage> pages,
+    required NavigationPage? unknownPage,
+    required Duration transitionDuration,
+    required RouteTransitionsBuilder? transitionsBuilder,
+    required List<NavigatorObserver> observers,
+    required String? restorationScopeId,
+    required bool useHash,
+  }) {
+    if (!useHash) setPathUrlStrategy();
+
+    var path = _initialPage = initialPage;
+
+    assert(() {
+      final hasInitialPage = pages.any((p) => p.path == path);
+
+      if (!hasInitialPage) {
+        throw NavigationException(
+            'Was not found any page with the path "$path"');
+      }
+
+      return true;
+    }());
+
+    assert(() {
+      final list = pages.map((p) => p.path).toList();
+
+      if (list.length != list.toSet().length) {
+        throw const NavigationException(
+          'There are some pages with the same path',
+        );
+      }
+
+      return true;
+    }());
+
+    final route = WidgetsBinding.instance!.window.defaultRouteName;
+
+    if (route != Navigator.defaultRouteName) path = route;
+
+    _pages = pages;
+    _unknownPage = unknownPage;
+    _transitionDuration = transitionDuration;
+    _transitionsBuilder = transitionsBuilder;
+    _observers = observers;
+    _restorationScopeId = restorationScopeId;
+
+    setNewRoutePath(_buildArgs(path));
   }
 
   PageArguments _buildArgs(String page, [Object? data]) {
@@ -43,34 +98,8 @@ class NavigationService extends RouterDelegate<String>
 
   @protected
   NavigationPage? _getPage(PageArguments arguments) {
-    final length = arguments.paths.length;
-
-    for (final page in pages) {
-      if (page.path == arguments.path) return page;
-
-      if (!page.hasPathParams) continue;
-
-      final paths = page.path.substring(1).split('/');
-
-      if (length != paths.length) continue;
-
-      var hasFound = false;
-
-      for (var i = 0; i < length; i++) {
-        final path = paths[i];
-        final current = arguments.paths[i];
-
-        if (path == current) {
-          hasFound = true;
-        } else if (path.isNotEmpty && path[0] == ':') {
-          arguments.params[path.substring(1)] = current;
-        } else {
-          hasFound = false;
-          break;
-        }
-      }
-
-      if (hasFound) return page;
+    for (final page in _pages) {
+      if (page(arguments)) return page;
     }
   }
 
@@ -85,8 +114,8 @@ class NavigationService extends RouterDelegate<String>
       child: page.builder(),
       fullscreenDialog: page.fullscreenDialog,
       maintainState: page.maintainState,
-      transitionDuration: page.transitionDuration ?? transitionDuration,
-      transitionsBuilder: page.transitionsBuilder ?? transitionsBuilder,
+      transitionDuration: page.transitionDuration ?? _transitionDuration,
+      transitionsBuilder: page.transitionsBuilder ?? _transitionsBuilder,
       isCompleted: _activePages.isEmpty,
     );
   }
@@ -214,16 +243,18 @@ class NavigationService extends RouterDelegate<String>
   }
 
   @override
-  void pushToUnknownPage([bool shouldResetPages = true]) {
-    final unknownPage = this.unknownPage;
+  bool pushToUnknownPage([bool shouldResetPages = true]) {
+    final unknownPage = _unknownPage;
 
-    if (unknownPage == null) return;
+    if (unknownPage == null) return false;
 
     if (shouldResetPages) _activePages.clear();
 
     _activePages.add(_buildSettings(unknownPage, _buildArgs(unknownPage.path)));
 
     notifyListeners();
+
+    return true;
   }
 
   @override
@@ -243,41 +274,30 @@ class NavigationService extends RouterDelegate<String>
   Widget build(BuildContext context) {
     return Navigator(
       key: navigatorKey,
-      restorationScopeId: restorationScopeId,
-      observers: observers,
+      restorationScopeId: _restorationScopeId,
+      observers: _observers,
       pages: List.unmodifiable(_activePages),
       onPopPage: _onPopPage,
-      transitionDelegate: const _DefaultTransitionDelegate(),
     );
   }
 
   @override
-  Future<void> setNewRoutePath(String configuration) async {
-    final args = _buildArgs(configuration);
-
-    final page = _getPage(args);
+  Future<void> setNewRoutePath(PageArguments configuration) async {
+    final page = _getPage(configuration);
 
     if (page == null) {
       pushToUnknownPage();
 
-      final last = _activePages.last;
-
-      if (last.isInitialPage) pushReplacement(last.arguments.path);
-
       return;
     }
 
-    if (!(await page(this, args))) return;
-
-    _activePages.clear();
-
-    final length = args.paths.length - 1;
+    final length = configuration.paths.length - 1;
 
     final buffer = StringBuffer();
 
     for (var i = 0; i < length; i++) {
       buffer.write('/');
-      buffer.write(args.paths[i]);
+      buffer.write(configuration.paths[i]);
 
       final arguments = _buildArgs(buffer.toString());
 
@@ -285,101 +305,14 @@ class NavigationService extends RouterDelegate<String>
 
       if (page == null) continue;
 
-      if (!(await page(this, args))) return;
-
       _activePages.add(_buildSettings(page, arguments));
     }
 
-    _activePages.add(_buildSettings(page, args));
+    _activePages.add(_buildSettings(page, configuration));
 
     notifyListeners();
   }
 
   @override
-  String? get currentConfiguration => _activePages.last.arguments.path;
-}
-
-class _DefaultTransitionDelegate<T> extends TransitionDelegate<T> {
-  const _DefaultTransitionDelegate() : super();
-
-  static late var _shouldAnimate = false;
-
-  @override
-  Iterable<RouteTransitionRecord> resolve({
-    required List<RouteTransitionRecord> newPageRouteHistory,
-    required Map<RouteTransitionRecord?, RouteTransitionRecord>
-        locationToExitingPageRoute,
-    required Map<RouteTransitionRecord?, List<RouteTransitionRecord>>
-        pageRouteToPagelessRoutes,
-  }) {
-    final results = <RouteTransitionRecord>[];
-
-    void handleExistingRoute(RouteTransitionRecord? key, bool isLast) {
-      final exitingPageRoute = locationToExitingPageRoute[key];
-
-      if (exitingPageRoute == null) return;
-
-      if (exitingPageRoute.isWaitingForExitingDecision) {
-        final pagelessRoutes = pageRouteToPagelessRoutes[exitingPageRoute];
-        final hasPagelessRoutes = pagelessRoutes != null;
-        final isLastExistingPageRoute =
-            isLast && !locationToExitingPageRoute.containsKey(exitingPageRoute);
-
-        if (isLastExistingPageRoute && !hasPagelessRoutes) {
-          exitingPageRoute.markForPop(exitingPageRoute.route.currentResult);
-        } else {
-          exitingPageRoute
-              .markForComplete(exitingPageRoute.route.currentResult);
-        }
-
-        if (hasPagelessRoutes) {
-          final length = pagelessRoutes!.length - 1;
-
-          for (var i = 0; i <= length; i++) {
-            final route = pagelessRoutes[i];
-
-            if (route.isWaitingForExitingDecision) {
-              if (isLastExistingPageRoute && i == length) {
-                route.markForPop(route.route.currentResult);
-              } else {
-                route.markForComplete(route.route.currentResult);
-              }
-            }
-          }
-        }
-      }
-
-      results.add(exitingPageRoute);
-
-      handleExistingRoute(exitingPageRoute, isLast);
-    }
-
-    handleExistingRoute(null, newPageRouteHistory.isEmpty);
-
-    final length = newPageRouteHistory.length - 1;
-
-    for (var i = 0; i <= length; i++) {
-      final isLast = i == length;
-      final pageRoute = newPageRouteHistory[i];
-
-      if (pageRoute.isWaitingForEnteringDecision) {
-        if (!_shouldAnimate) {
-          _shouldAnimate = true;
-
-          pageRoute.markForAdd();
-        } else if (isLast &&
-            !locationToExitingPageRoute.containsKey(pageRoute)) {
-          pageRoute.markForPush();
-        } else {
-          pageRoute.markForAdd();
-        }
-      }
-
-      results.add(pageRoute);
-
-      handleExistingRoute(pageRoute, isLast);
-    }
-
-    return results;
-  }
+  PageArguments? get currentConfiguration => _activePages.last.arguments;
 }

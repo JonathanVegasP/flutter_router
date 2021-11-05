@@ -1,11 +1,11 @@
-import 'package:example/page_validators/profile_validator.dart';
-import 'package:example/ui/home_screen.dart';
-import 'package:example/ui/not_found.dart';
-import 'package:example/ui/profile_screen.dart';
-import 'package:example/ui/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:router_management/router_management.dart';
+
+import 'ui/home_screen.dart';
+import 'ui/not_found.dart';
+import 'ui/profile_screen.dart';
+import 'ui/splash_screen.dart';
 
 void main() {
   runApp(
@@ -23,10 +23,17 @@ void main() {
           name: HomeScreen.name,
         ),
         NavigationPage(
-            path: ProfileScreen.path,
-            builder: () => const ProfileScreen(),
-            name: ProfileScreen.name,
-            validators: const [ProfileValidator()]),
+          path: ProfileScreen.path,
+          builder: () => NavigationRouterGuard(
+            child: const ProfileScreen(),
+            validation: (args) async {
+              if (args.query['name'] == null) return false;
+
+              return true;
+            },
+          ),
+          name: ProfileScreen.name,
+        ),
       ], // The pages
       // The initial page's path. Defaults to "/"
       initialPage: SplashScreen.path,
@@ -45,7 +52,6 @@ class App extends StatelessWidget with NavigationWidgetMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routeInformationProvider: routeInformationProvider,
       routeInformationParser: routeInformationParser,
       routerDelegate: routerDelegate,
       title: 'Router Management Example',
@@ -67,7 +73,6 @@ class App extends StatelessWidget with NavigationWidgetMixin {
 //   @override
 //   Widget build(BuildContext context) {
 //     return MaterialApp.router(
-//       routeInformationProvider: widget.routeInformationProvider,
 //       routeInformationParser: widget.routeInformationParser,
 //       routerDelegate: widget.routerDelegate,
 //       title: 'Router Management Example',

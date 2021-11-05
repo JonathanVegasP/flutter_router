@@ -31,4 +31,7 @@ class PageArguments {
 
   /// Is used to create a new instance of [PageArguments]
   PageArguments(this.uri, [this.data]);
+
+  @override
+  String toString() => completePath;
 }

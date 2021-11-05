@@ -1,4 +1,4 @@
-import 'package:router_management/src/ui/page_settings.dart';
+import 'package:router_management/src/widgets/page_settings.dart';
 
 /// [Navigation] is the core navigation interface and is used to controls the
 /// navigator 2.0
@@ -31,7 +31,7 @@ mixin Navigation {
   void popUntil(bool Function(PageSettings) predicate);
 
   /// [Navigation.pushToUnknownPage] is used to navigate to the unknown page
-  void pushToUnknownPage([bool shouldResetPages = true]);
+  bool pushToUnknownPage([bool shouldResetPages = true]);
 
   /// [Navigation.canPop] is used to know when the page can be popped
   bool get canPop;

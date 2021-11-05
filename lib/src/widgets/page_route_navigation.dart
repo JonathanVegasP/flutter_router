@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:router_management/src/ui/page_settings.dart';
+import 'package:router_management/src/widgets/page_settings.dart';
 
 class PageRouteNavigation extends PageRoute<void> {
   PageRouteNavigation(PageSettings settings)

@@ -58,7 +58,9 @@ class NavigationRouter extends StatefulWidget {
     this.useHash = false,
     this.restorationScopeId,
     this.unknownPage,
-    this.transitionDuration = const Duration(milliseconds: 400),
+    this.transitionDuration = kIsWeb
+        ? const Duration(microseconds: 1)
+        : const Duration(milliseconds: 400),
     this.transitionsBuilder = kIsWeb ? defaultWebTransition : null,
   }) : super(key: key);
 
