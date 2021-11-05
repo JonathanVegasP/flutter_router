@@ -1,3 +1,6 @@
+## [3.1.0] - Break Changes
+* Break Changes: Removed the validators. Use the NavigationRouterGuard instead.
+
 ## [3.0.2] - Fixed page validators
 * Fixed a bug that was happening with page validators
 

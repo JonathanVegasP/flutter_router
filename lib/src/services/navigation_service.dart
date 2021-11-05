@@ -1,5 +1,3 @@
-import 'dart:async' show scheduleMicrotask;
-
 import 'package:flutter/widgets.dart';
 import 'package:router_management/src/exceptions/navigation_exception.dart';
 import 'package:router_management/src/mixins/navigation.dart';
@@ -34,11 +32,6 @@ class NavigationService extends RouterDelegate<PageArguments>
 
   @override
   Future<void> setInitialRoutePath(PageArguments configuration) async {}
-
-  @override
-  void notifyListeners() {
-    scheduleMicrotask(super.notifyListeners);
-  }
 
   /// This is used internally
   void initialize({
