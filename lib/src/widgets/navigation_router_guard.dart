@@ -45,7 +45,7 @@ class NavigationRouterGuard extends StatefulWidget {
 }
 
 class _NavigationRouterGuardState extends State<NavigationRouterGuard>
-    with NavigationRouteGuardMixin {
+    with NavigationRouterGuardMixin {
   @override
   Widget build(BuildContext context) {
     if (canActivate) return widget.child;
